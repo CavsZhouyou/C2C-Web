@@ -4,6 +4,5 @@ from .models import db
 
 app=Flask(__name__)
 app.config.from_object('config')
-app.app_context()
 
 from app import views
