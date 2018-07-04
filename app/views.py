@@ -2,6 +2,11 @@ from app import app
 from flask import request,flash,redirect,session,g,jsonify
 from .models import *
 import re 
+
+#json 化
+success =jsonify({'success':True})
+failed = jsonify({'success':False})
+
 @app.route('/')
 def index():
     return "HelloWorld"
@@ -27,9 +32,9 @@ def login():
         user = User.usercheck(email,password)
         if user:
             session['user'] = user.user_id 
-            return "{success:True}"
+            return success
         else:
-            return "{success:False}"
+            return failed
 
 @app.route('/registe',methods=['POST','GET'])
 def registe():
@@ -42,9 +47,9 @@ def registe():
         #TO-DO
         #获取表格信息，填充一个user对象
         if User.useradd(user):
-            return "{success:True}"
+            return success
         else:
-            return "{success:False}"
+            return failed
 
 @app.route('/logout',methods=['GET','POST'])
 def logout():
@@ -57,5 +62,5 @@ def userinfo()
     if g.current_user:
         return g.current_user.getuserinfo()
     else:
-        return jsonify({'success':False})
+        return failed
 
