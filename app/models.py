@@ -6,6 +6,44 @@ db = SQLAlchemy()
 #通过继承db.Model,可以直接由迁移程序将模型映射到数据库
 class User(db.Model):
     user_id = db.Column(db.Integer,primary_key=True)
+    
+    @staticmethod 
+    def usercheck(email,password):
+        filter_bytes="\' "
+        if len(email)<5 or len(email)>20:
+            return False 
+        #验证密码长度和空格
+        if len(password)<5 or len(password)>50:
+            return False 
+        #非法字符验证
+        for byte in filter_bytes:
+            if byte in email or byte in password:
+                return False 
+
+        #正则表达式验证邮箱地址格式
+        reg_filter = r'(^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$)'
+        filter_format = re.compile(reg_filter)
+        item = filter_format.findall(email)
+        if not item[0]:
+            return False 
+        filters = {'email':email,'password':password}
+        user = User.query.filter(**filters).first()
+        if user:
+            return user 
+        else 
+            return False 
+    @staticmethod
+    def useradd(user):
+        #查重
+        filters = {'email':user.email}
+        finduser = User.query.filter(**filters).first()
+        if finduser:
+            return False 
+        else:
+            db.session.add(user)
+            db.session.commit()
+            return True 
+            
 
 #旅行信息推送
 class TravelMessage(db.Model):

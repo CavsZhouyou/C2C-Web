@@ -1,30 +1,54 @@
 from app import app 
-from flask import request
+from flask import request,flash,redirect,session,g
 from .models import *
 import re 
 @app.route('/')
 def index():
     return "HelloWorld"
 
-@app.route('/login',method['POST'])
-    def login():
-        email = request.form.get('email','')
-        #验证账号长度和空格
-        if len(email)<5 or len(email)>20 or ' ' in email:
-            return "{success:false}"
-        password = request.form.get('password','')
-        #验证密码长度和空格
-        if len(password)<5 or len(password)>50 or ' ' in email:
-            return "{success:false}"
-        #正则表达式验证邮箱地址格式
-        reg_filter = r'(^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$)'
-        filter_format = re.compile(reg_filter)
-        item = filter_format.findall(email)
-        if not item[0]:
-            return "{success:false}"
-        user = User.query.filter_by(email=email and password=password).first()
+@app.before_request
+def before_request():
+    if 'user' in session:
+        g.current_user = User.query.filter_by(
+                user_id=session['user']).one()
+    else:
+        g.current_user=None 
+
+@app.route('/login',methods=['POST','GET'])
+def login():
+    if g.current_user:
+        flash("您已经登录")
+        return redirect('/')
+    if request.method=="GET":
+        return app.send_satic_file('login.html')
+    else: 
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.usercheck(email,password)
         if user:
-            session['user'] = user.user_id
-            return "{success:true}"
-        else 
-            return "{success:false}"
+            session['user'] = user.user_id 
+            return "{success:True}"
+        else:
+            return "{success:False}"
+
+@app.route('/registe',methods=['POST','GET'])
+def registe():
+    if g.current_user:
+        flash("您已经登录")
+        return redirect('/')
+    if request.method=="GET"
+        return app.send_satic_file('registe.html')
+    else:
+        #TO-DO
+        #获取表格信息，填充一个user对象
+        if User.useradd(user):
+            return "{success:True}"
+        else:
+            return "{success:False}"
+
+@app.route('/logout',methods=['GET','POST'])
+def logout():
+    session.pop('user',None)
+    g.current_user=None 
+    return redirect('/login')
+
