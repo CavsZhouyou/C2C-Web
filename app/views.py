@@ -1,6 +1,7 @@
 from app import app 
 from flask import request,flash,redirect,session,g,jsonify
 from .models import *
+import json 
 import re 
 
 #json 化
@@ -64,3 +65,36 @@ def userinfo()
     else:
         return failed
 
+@app.route('/travelmessage/list/',methods=['GET','POST'])
+def travelmessage():
+    dic = request.get_json()
+    if 'index' in dic:
+        index = dic['index']
+        return_dic={}
+        if isinstance(index,int) and index>0:
+            index=index*10 
+            travelmessages = TravelMessage.query.order_by(
+        TravelMessage.date.desc()).all()[index-10:index-1]
+            for tm in travelmessages:
+                return_dic[tm.tmessage_id] = {tm.title,tm.date,tm.addressOftravel}
+
+            return jsonify(return_dic)
+    else:
+        return failed 
+
+@app.route('/travelmessage/<int:tm_id>',methods=['GET'])
+def travelmessage_id(tm_id):
+    tm = TravelMessage.query.get(tm.id)
+    if tm:
+        return app.send_satic_file('travelmessage_info.html')
+    else:
+        return app.send_static_file('404.html')
+
+@app.route('/travelmessage/show/<int:tm_id>',methods=['GET'])
+def travelmessage_id_info(tm_id):
+    tm = TravelMessage.query.get(tm.id)
+    if tm:
+        return tm.to_json()
+    else:
+        return failed 
+    
