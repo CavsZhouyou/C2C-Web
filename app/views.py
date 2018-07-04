@@ -1,5 +1,5 @@
 from app import app 
-from flask import request,flash,redirect,session,g
+from flask import request,flash,redirect,session,g,jsonify
 from .models import *
 import re 
 @app.route('/')
@@ -51,4 +51,11 @@ def logout():
     session.pop('user',None)
     g.current_user=None 
     return redirect('/login')
+
+@app.route('/userinfo',methods=['GET','POST'])
+def userinfo()
+    if g.current_user:
+        return g.current_user.getuserinfo()
+    else:
+        return jsonify({'success':False})
 

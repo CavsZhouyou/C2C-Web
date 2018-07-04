@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy 
+from flask import jsonify
 #初始化数据库变量
 db = SQLAlchemy()
 
@@ -43,7 +44,15 @@ class User(db.Model):
             db.session.add(user)
             db.session.commit()
             return True 
-            
+    def getuserinfo(self):
+        return jsonify({
+                'id':self.user_id,
+                'nickname':self.nickname,
+                'email':self.email,
+                'phone':self.phone,
+                'address':self.acc_address
+                })
+        
 
 #旅行信息推送
 class TravelMessage(db.Model):
