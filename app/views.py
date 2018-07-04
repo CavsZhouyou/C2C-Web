@@ -4,10 +4,6 @@ from .models import *
 import json 
 import re 
 
-#json 化
-success =jsonify({'success':True})
-failed = jsonify({'success':False})
-
 @app.route('/')
 def index():
     return "HelloWorld"
@@ -33,24 +29,24 @@ def login():
         user = User.usercheck(email,password)
         if user:
             session['user'] = user.user_id 
-            return success
+            return jsonify({'success':True})
         else:
-            return failed
+            return jsonify({'success':False})
 
 @app.route('/registe',methods=['POST','GET'])
 def registe():
     if g.current_user:
         flash("您已经登录")
         return redirect('/')
-    if request.method=="GET"
+    if request.method=="GET":
         return app.send_satic_file('registe.html')
     else:
         #TO-DO
         #获取表格信息，填充一个user对象
         if User.useradd(user):
-            return success
+            return jsonify({'success':True})
         else:
-            return failed
+            return jsonify({'success':False})
 
 @app.route('/logout',methods=['GET','POST'])
 def logout():
@@ -59,11 +55,11 @@ def logout():
     return redirect('/login')
 
 @app.route('/userinfo',methods=['GET','POST'])
-def userinfo()
+def userinfo():
     if g.current_user:
         return g.current_user.getuserinfo()
     else:
-        return failed
+        return jsonify({'success':False})
 
 @app.route('/travelmessage/list/',methods=['GET','POST'])
 def travelmessage():
@@ -80,7 +76,7 @@ def travelmessage():
 
             return jsonify(return_dic)
     else:
-        return failed 
+        return jsonify({'success':False}) 
 
 @app.route('/travelmessage/<int:tm_id>',methods=['GET'])
 def travelmessage_id(tm_id):
@@ -96,5 +92,5 @@ def travelmessage_id_info(tm_id):
     if tm:
         return tm.to_json()
     else:
-        return failed 
+        return jsonify({'success':False}) 
     

@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy 
+from datetime import datetime
 from flask import jsonify
 #初始化数据库变量
 db = SQLAlchemy()
@@ -31,7 +32,7 @@ class User(db.Model):
         user = User.query.filter(**filters).first()
         if user:
             return user 
-        else 
+        else: 
             return False 
     @staticmethod
     def useradd(user):
@@ -57,11 +58,11 @@ class User(db.Model):
 #旅行信息推送
 class TravelMessage(db.Model):
     __tablename__ = 'travelmessage'
-    tmessage_id = db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)
+    tmessage_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))
     title=db.Column(db.String(100),nullable=False)
     content = db.Column(db.Text)
-    date = db.Column(db.DateTime,nullable=False,default=datetime.now))
+    date = db.Column(db.DateTime,nullable=False,default=datetime.now)
     addressoftravel=db.Column(db.String(100),nullable=False)
     
     def to_json(self):
@@ -77,16 +78,16 @@ class TravelMessage(db.Model):
 #免责声明
 class Disclaimer(db.Model):
     __tablename__= 'disclaimer'
-    disclaimer_id = db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)
+    disclaimer_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))
     content = db.Column(db.Text)
     title = db.Column(db.String(100),nullable=False)
-    publishdate = db.Column(db.Datetime,nullable,default=datetime.now)
+    publishdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
 
 
 #房源
 class Accommodation(db.Model):
-    acc_id = db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)    #房源ID
+    acc_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)    #房源ID
     acc_address = db.Column(db.String(255))            #房源地址
     acc_capacity = db.Column(db.Integer)               #房源面积
     acc_price = db.Column(db.Numeric)                  #房源价格
@@ -97,12 +98,12 @@ class Accommodation(db.Model):
 
 #房源类型
 class AccommodationType(db.Model):
-    acctype_id = db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)  #类型ID
+    acctype_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)  #类型ID
     acctype_description = db.Column(db.String(255))      #类型描述
 
 #合同
 class Contract(db.Model):
-    con_id = db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)      #合同ID
+    con_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)      #合同ID
     con_res_id =  db.Column(db.Integer,db.ForeignKey('reservation.res_id'))      #订单ID
     con_res = db.relationship('reservation',backref=db.backref('contract'))
     con_tenant_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))      #租房者ID
@@ -115,8 +116,8 @@ class Contract(db.Model):
     con_disclaimer_id = db.Column(db.Integer,db.ForeignKey('disclaimer.disclaimer_id'))   #免责声明ID
 
 #合同状态
-class ContractState(db.model):
-    constate_id=db.Column(db.Integer,auto_increment=True,nullable=False,unique=True,primary_key=True)       #合同状态ID
+class ContractState(db.Model):
+    constate_id=db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)       #合同状态ID
     constate_description=db.Column(db.String)        #合同状态描述
     
 
