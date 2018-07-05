@@ -130,6 +130,15 @@ class Accommodation(db.Model):
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
     
+    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id):
+        self.acc_address = acc_address
+        self.acc_capacity = acc_capacity
+        self.acc_price = acc_price
+        self.acc_city =  acc_city 
+        self.acc_description = acc_description 
+        self.acc_user_id = acc_user_id 
+        self.acc_type_id = acc_type_id 
+
     def to_json(self):
         return jsonify({
             'acc_address':self.acc_address,

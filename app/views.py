@@ -151,17 +151,26 @@ def accommodation_add():
         acc_user_id = data['acc_user_id'],
         acc_type_id = data['acc_type_id'],
     )
-    db.session.add(oneAcc)
-    db.session.commit()
-    return "{success:True}"
+    try:
+        db.session.add(oneAcc)
+        db.session.commit()
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
 
 @app.route('/del_one_accommodation/<int:acc_id>')
 def del_one_accommodation(acc_id):
+    if g.current_user.role_id != 1:
+        return jsonify({'success':False})
     oneAcc = Accommodation.query.get(acc_id)
     if oneAcc:
-        db.session.delete(oneAcc)
-        return "{success:True}"
+        try:
+            db.session.delete(oneAcc)
+            db.session.commit()
+            return jsonify({'success':True})
+        except Exception:
+            return jsonify({'success':False})
     else:
-        return "{success:False}"
+        return jsonify({'success':False})
 
     
