@@ -68,9 +68,13 @@ class User(db.Model):
         if finduser:
             return False 
         else:
-            db.session.add(user)
-            db.session.commit()
-            return True 
+            try:
+                db.session.add(user)
+                db.session.commit()
+                return True
+            except Exception:
+                return False 
+
     def to_json(self):
         return jsonify({
                 'id':self.user_id,
