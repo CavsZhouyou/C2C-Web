@@ -250,3 +250,27 @@ def accommodation_update():
             return jsonify({'success': False})
     else:
         return jsonify({'success': False})    
+
+
+#添加图片
+@app.route('/accommodation/image/add',methods=['GET','POST'])
+def accommodation_image_add():
+    data = request.get_json()
+    image = AccommodationImage(accImage_acc_id = data['acc_id'], accImage_url = data['accImage_url'] )
+    try:
+        db.session.add(image)
+        db.session.commit()
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
+
+#删除图片
+@app.route('/accommodation/image/del/<int:accImage_id>',methods=['GET'])
+def accommodation_image_del(accImage_id):
+    image = AccommodationImage.query.get(accImage_id)
+    try:
+        db.session.delete(image)
+        db.session.commit()
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
