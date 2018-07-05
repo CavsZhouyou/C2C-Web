@@ -150,6 +150,7 @@ def accommodation_add():
         acc_description = data['acc_description'],
         acc_user_id = data['acc_user_id'],
         acc_type_id = data['acc_type_id'],
+        oneAcc.acc_city = data['acc_city']
     )
     try:
         db.session.add(oneAcc)
@@ -173,4 +174,58 @@ def del_one_accommodation(acc_id):
     else:
         return jsonify({'success':False})
 
-    
+
+@app.route('/accommodation/delete/<int:acc_id>',methods=['GET'])
+def accommodation_delete(acc_id):
+    #判断是否是出租者
+    if g.current_user.role_id != 2:
+        return jsonify({'success': False})
+    #判断是否是出租者拥有的房源
+    oneAcc=Accommodation.query.get(acc_id)
+    if oneAcc:
+        if oneAcc.acc_user_id != g.current_user.user_id:
+            jsonify({'success': False})
+    else:
+        return jsonify({'success': False})
+
+    #删除房源
+    if oneAcc:
+        try:
+            db.session.delete(oneAcc)
+            db.session.commit()
+            return jsonify({'success': True})
+        except Exception:
+            return jsonify({'success': False})
+    else:
+        return jsonify({'success': False})
+
+@app.route('/accommodation/update/',methods=['GET','POST'])
+def accommodation_update():
+    # 判断是否是出租者
+    if g.current_user.role_id != 2:
+        return jsonify({'success': False})
+    # 判断是否是出租者拥有的房源
+    data = request.get_json()
+    oneAcc = Accommodation.query.get(data['acc_id'])
+    if oneAcc:
+        if oneAcc.acc_user_id != g.current_user.user_id:
+            jsonify({'success': False})
+    else:
+        return jsonify({'success': False})
+
+    #修改房源
+    if oneAcc:
+        oneAcc.acc_address = data['acc_address']
+        oneAcc.acc_capacity = data['acc_capacity']
+        oneAcc.acc_price = data['acc_price']
+        oneAcc.acc_area = data['acc_area']
+        oneAcc.acc_description = data['acc_description']
+        oneAcc.acc_user_id = data['acc_user_id']
+        oneAcc.acc_type_id = data['acc_type_id']
+        oneAcc.acc_city = data['acc_city']
+        try:
+            db.session.commit()
+        except Exception:
+            return jsonify({'success': False})
+    else:
+        return jsonify({'success': False})    
