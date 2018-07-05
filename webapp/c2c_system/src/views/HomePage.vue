@@ -8,11 +8,14 @@
           </span>
         </div>
         <div class="right-bar">
-          <span>
-            <a href="">注册</a>
+          <span v-if="isLogined">
+            <a href="">个人中心</a>
           </span>
-          <span>
-            <a href="">登录</a>
+          <span v-if="!isLogined">
+            <a href="" @click.prevent="registToggle()">注册</a>
+          </span>
+          <span v-if="!isLogined">
+            <a href="" @click.prevent="loginToggle()">登录</a>
           </span>
           <span>
             <a href="">帮助</a>
@@ -79,11 +82,67 @@
           <a href=""><img src="../assets/10.jpg" alt="重庆">
             <span class="title">重庆</span>
           </a>
-
         </div>
       </div>
+      <transition name="el-fade-in">
+        <div class="bounce-box" v-show="isRegist">
+          <div class="content">
+            <a href="" @click.prevent="registToggle()">
+              <i class="el-icon-close"></i>
+            </a>
+            <h3>用户注册</h3>
+            <div class="line">
+              <el-input placeholder="请输入用户名" prefix-icon="el-icon-edit-outline"></el-input>
+            </div>
+            <div class="line">
+              <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-view"></el-input>
+            </div>
+            <div class="line">
+              <el-input placeholder="请输入联系方式" prefix-icon="el-icon-mobile-phone"></el-input>
+            </div>
+            <div class="line">
+              <el-input placeholder="请输入注册邮箱" prefix-icon="el-icon-message"></el-input>
+            </div>
+            <div class="line">
+              <el-input placeholder="请输入姓名" prefix-icon="el-icon-edit-outline"></el-input>
+            </div>
+            <div class="line">
+              <el-input placeholder="请输入身份证号码" prefix-icon="el-icon-tickets"></el-input>
+            </div>
+            <div class="line">
+              <el-select v-model="role" placeholder="请选择角色" class="select-box">
+                <el-option v-for="item in roles" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="line clearfix">
+              <el-checkbox v-model="checked" class="check-box">我已经阅读并同意《寻房网服务协议》</el-checkbox>
+            </div>
+            <button @click="registToggle()">同意条款并注册</button>
+          </div>
+        </div>
+      </transition>
+      <transition name="el-fade-in">
+        <div class="bounce-box" v-show="isLogin">
+          <div class="content">
+            <a href="" @click.prevent="loginToggle()">
+              <i class="el-icon-close"></i>
+            </a>
+            <h3>用户登录</h3>
+            <div class="line">
+              <el-input placeholder="请输入用户名" prefix-icon="el-icon-edit-outline"></el-input>
+            </div>
+            <div class="line">
+              <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-view"></el-input>
+            </div>
+            <button @click="login()">登录</button>
+          </div>
+        </div>
+      </transition>
     </div>
+    <div class="mask-layer" v-show="isMaskLayerShow"> </div>
   </div>
+
 </template>
 
 
@@ -96,8 +155,40 @@ const url4 = require("../assets/7.jpg");
 const HomePage = {
     data: function() {
         return {
-            photos: [url1, url2, url3, url4]
+            photos: [url1, url2, url3, url4],
+            roles: [
+                {
+                    value: "0",
+                    label: "租房用户"
+                },
+                {
+                    value: "1",
+                    label: "出租用户"
+                }
+            ],
+
+            role: "",
+
+            isMaskLayerShow: false,
+            isRegist: false,
+            isLogin: false,
+            isLogined: false
         };
+    },
+    methods: {
+        registToggle: function() {
+            this.isMaskLayerShow = !this.isMaskLayerShow;
+            this.isRegist = !this.isRegist;
+        },
+        loginToggle: function() {
+            this.isMaskLayerShow = !this.isMaskLayerShow;
+            this.isLogin = !this.isLogin;
+        },
+        login: function() {
+            this.isMaskLayerShow = !this.isMaskLayerShow;
+            this.isLogin = !this.isLogin;
+            this.isLogined = true;
+        }
     }
 };
 
@@ -225,6 +316,77 @@ export default HomePage;
                 }
             }
         }
+    }
+
+    .bounce-box {
+        position: absolute;
+        z-index: 12;
+        top: 100px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 450px;
+        background: #fff;
+
+        .content {
+            position: relative;
+            padding: 20px 30px 30px;
+
+            a:hover {
+                color: #ff5a5f;
+            }
+
+            .el-icon-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-size: 30px;
+            }
+
+            h3 {
+                font-size: 24px;
+            }
+
+            .line {
+                margin-bottom: 20px;
+
+                .select-box {
+                    width: 390px;
+                }
+
+                .check-box {
+                    float: left;
+                }
+
+                ::-webkit-input-placeholder {
+                    /* WebKit browsers */
+                    color: #999;
+                }
+                :-moz-placeholder {
+                    /* Mozilla Firefox 4 to 18 */
+                    color: #999;
+                }
+                ::-moz-placeholder {
+                    /* Mozilla Firefox 19+ */
+                    color: #999;
+                }
+                :-ms-input-placeholder {
+                    /* Internet Explorer 10+ */
+                    color: #999;
+                }
+            }
+            button {
+                border: none;
+                border-radius: 5px;
+                width: 390px;
+                height: 40px;
+                background: #ff5a5f;
+                color: #fff;
+            }
+        }
+    }
+
+    .login-box {
     }
 }
 </style>

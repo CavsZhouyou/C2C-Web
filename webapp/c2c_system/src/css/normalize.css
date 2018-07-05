@@ -624,8 +624,8 @@ th {
     left: 0;
     height: 100%;
     width: 100%;
-    background-color: #eaeaea;
-    opacity: 0.7;
+    background-color: #000;
+    opacity: 0.3;
 }
 
 /** change a style */
