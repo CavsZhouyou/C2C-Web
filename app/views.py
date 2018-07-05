@@ -57,7 +57,7 @@ def logout():
 @app.route('/userinfo',methods=['GET','POST'])
 def userinfo():
     if g.current_user:
-        return g.current_user.getuserinfo()
+        return g.current_user.to_json()
     else:
         return jsonify({'success':False})
 
