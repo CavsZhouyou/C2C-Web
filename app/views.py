@@ -16,6 +16,7 @@ def before_request():
     else:
         g.current_user=None 
 
+#登录请求
 @app.route('/login',methods=['POST','GET'])
 def login():
     if g.current_user:
@@ -33,6 +34,7 @@ def login():
         else:
             return jsonify({'success':False})
 
+#注册请求
 @app.route('/registe',methods=['POST','GET'])
 def registe():
     if g.current_user:
@@ -57,12 +59,14 @@ def registe():
         else:
             return jsonify({'success':False})
 
+#登出请求
 @app.route('/logout',methods=['GET','POST'])
 def logout():
     session.pop('user',None)
     g.current_user=None 
     return redirect('/login')
 
+#用户信息获取接口
 @app.route('/userinfo',methods=['GET','POST'])
 def userinfo():
     if g.current_user:
@@ -70,6 +74,7 @@ def userinfo():
     else:
         return jsonify({'success':False})
 
+#旅游信息分页获取，用例：{'index':1} 请求第一页
 @app.route('/travelmessage/list/',methods=['GET','POST'])
 def travelmessage():
     dic = request.get_json()
@@ -87,6 +92,7 @@ def travelmessage():
     else:
         return jsonify({'success':False}) 
 
+#旅游信息页面请求
 @app.route('/travelmessage/<int:tm_id>',methods=['GET'])
 def travelmessage_id(tm_id):
     tm = TravelMessage.query.get(tm.id)
@@ -95,6 +101,7 @@ def travelmessage_id(tm_id):
     else:
         return app.send_static_file('404.html')
 
+#旅游信息页面缓加载接口
 @app.route('/travelmessage/show/<int:tm_id>',methods=['GET'])
 def travelmessage_id_info(tm_id):
     tm = TravelMessage.query.get(tm.id)
@@ -103,6 +110,7 @@ def travelmessage_id_info(tm_id):
     else:
         return jsonify({'success':False})
 
+#房源信息分页请求
 @app.route('/accommodation/list/', methods=['GET', 'POST'])
 def accommodation():
     dic = request.get_json()
@@ -118,6 +126,7 @@ def accommodation():
     else:
         return jsonify({'success': False})
 
+#对应房源信息的图片请求接口
 @app.route('/accommodation/image/<int:acc_id>',methods=['GET'])
 def accommodation_id_image(acc_id):
     images = AccommodationImage.query.filter(accImage_acc_id=acc_id).all()
@@ -131,7 +140,7 @@ def accommodation_id_image(acc_id):
     else:
         return jsonify({'success': False})
 
-
+#对应单个房源信息展示页面请求
 @app.route('/accommodation/<int:acc_id>', methods=['GET'])
 def accommodation_id(acc_id):
     one_acc = Accommodation.query.get(acc_id)
@@ -140,14 +149,16 @@ def accommodation_id(acc_id):
     else:
         return app.send_static_file('404.html')
 
+#对应单个房源信息缓加载请求
 @app.route('/accommodation/show/<int:acc_id>', methods=['GET'])
 def accommodation_id_info(acc_id):
-    one_acc = TravelMessage.query.get(acc_id)
+    one_acc = Accommodation.query.get(acc_id)
     if one_acc:
         return one_acc.to_json()
     else:
         return jsonify({'success': False})
 
+#房源信息添加接口
 @app.route('/accommodation/add',methods=['GET','POST'])
 def accommodation_add():
     data=request.get_json()
@@ -167,6 +178,7 @@ def accommodation_add():
     except Exception:
         return jsonify({'success':False})
 
+#删除单个房源信息接口
 @app.route('/del_one_accommodation/<int:acc_id>')
 def del_one_accommodation(acc_id):
     if g.current_user.role_id != 1:
@@ -183,6 +195,7 @@ def del_one_accommodation(acc_id):
         return jsonify({'success':False})
 
 
+#出租者请求删除自己的房源信息
 @app.route('/accommodation/delete/<int:acc_id>',methods=['GET'])
 def accommodation_delete(acc_id):
     #判断是否是出租者
@@ -207,6 +220,7 @@ def accommodation_delete(acc_id):
     else:
         return jsonify({'success': False})
 
+#房源信息更新
 @app.route('/accommodation/update/',methods=['GET','POST'])
 def accommodation_update():
     # 判断是否是出租者
