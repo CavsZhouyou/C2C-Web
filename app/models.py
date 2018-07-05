@@ -97,6 +97,13 @@ class TravelMessage(db.Model):
     date = db.Column(db.DateTime,nullable=False,default=datetime.now)
     addressoftravel=db.Column(db.String(100),nullable=False)
     
+    def __init__(self,user_id,title,content,addressoftravel):
+        self.user_id = user_id 
+        self.title = title 
+        self.content = content 
+        self.date = datetime.now()
+        self.addressoftravel = addressoftravel 
+
     def to_json(self):
         return jsonify({
             'tmessage_id':self.tmessage_id,
@@ -116,6 +123,12 @@ class Disclaimer(db.Model):
     title = db.Column(db.String(100),nullable=False)
     publishdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
     
+    def __init__(self,user_id,title,content)
+        self.user_id = user_id 
+        self.title = title 
+        self.content = content 
+        publishdate = datetime.now()
+
     def to_json(self):
         return jsonify({
             'title':self.title,
@@ -169,8 +182,14 @@ class AccommodationImage(db.Model):
     accImage_acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id')) # 房源ID
     accImage_url = db.Column(db.String(255))     # 图片url地址
 
+    def __init__(self,accImage_acc_id,accImage_url):
+        self.accImage_acc_id = accImage_acc_id 
+        self.accImage_url = accImage_url 
+
+
+
 #城市
-class city(db.Model):
+class City(db.Model):
     city_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     city_name = db.Column(db.String(20),nullable=False)
     city_info = db.Column(db.Text)
@@ -190,6 +209,15 @@ class Contract(db.Model):
     con_lessor_option = db.Column(db.Boolean,default=False)      #出租者同意
     con_state_id = db.Column(db.Integer,db.ForeignKey('constate.state_id'))      #合同状态ID
     con_disclaimer_id = db.Column(db.Integer,db.ForeignKey('disclaimer.disclaimer_id'))   #免责声明ID
+
+    def __init__(self,con_res_id,con_tenant_id,con_lessor_id,con_tenant_option,con_lessor_option,con_state_id,con_disclaimer_id)
+        self.con_res_id = con_res_id 
+        self.con_tenant_id = con_tenant_id 
+        self.con_lessor_id = con_lessor_id 
+        self.con_tenant_option = con_tenant_option 
+        self.con_lessor_option = con_lessor_option 
+        self.con_state_id = con_state_id 
+        self.con_disclaimer_id = con_disclaimer_id 
 
     def to_json(self):
         return jsonify({
@@ -231,6 +259,13 @@ class Reservation(db.Model):
     state_id = db.Column(db.Integer,db.Foreignkey('ResState.state_id'))
     date = db.Column(db.DateTime, nullable=False,default = datetime.now)
     
+    def __init__(self,tenant_id,demand,acc_id,state_id)
+        self.tenant_id = tenant_id 
+        self.demand = demand 
+        self.acc_id = acc_id 
+        self.state_id = state_id 
+        self.date = datetime.now 
+
     def to_json(self):
         return jsonify({
             'tenant_id':self.tenant_id,
@@ -260,6 +295,12 @@ class Comment(db.Model):
     to_who = db.Column(db.Integer,db.Foreignkey('user.user_id'))
     content = db.Column(db.String(15), nullable=False)
     date = db.Column(db.DateTime, nullable=False,default = datetime.now)
+
+    def __init__(self,from_who,to_which,to_who,content)
+        self.from_who = from_who 
+        self.to_which = to_which 
+        self.to_who = to_who 
+        self.content = content 
 
     def to_json(self):
         return jsonify({

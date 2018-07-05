@@ -41,8 +41,17 @@ def registe():
     if request.method=="GET":
         return app.send_satic_file('registe.html')
     else:
-        #TO-DO
-        #获取表格信息，填充一个user对象
+        dic = request.get_json()
+        user = User(
+                nickname=dic['nickname'],
+                password=dic['password'],
+                email = dic['email'],
+                phone = dic['phone'],
+                role_id = dic['role_id'],
+                address = dic['address'],
+                name = dic['name'],
+                id_card = dic['id_card']
+                )
         if User.useradd(user):
             return jsonify({'success':True})
         else:
