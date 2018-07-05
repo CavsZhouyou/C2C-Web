@@ -113,7 +113,7 @@ def accommodation():
             index = index * 10
             accommodations = Accommodation.query.all()[index - 10:index - 1]
             for one_acc in accommodations:
-                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_area, one_acc.acc_price,images}
+                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_city, one_acc.acc_price}
             return jsonify(return_dic)
     else:
         return jsonify({'success': False})
@@ -155,11 +155,10 @@ def accommodation_add():
         acc_address = data['acc_address'],
         acc_capacity = data['acc_capacity'],
         acc_price = data['acc_price'],
-        acc_area = data['acc_area'],
+        acc_city = data['acc_city'],
         acc_description = data['acc_description'],
         acc_user_id = data['acc_user_id'],
         acc_type_id = data['acc_type_id'],
-        oneAcc.acc_city = data['acc_city']
     )
     try:
         db.session.add(oneAcc)
@@ -227,7 +226,6 @@ def accommodation_update():
         oneAcc.acc_address = data['acc_address']
         oneAcc.acc_capacity = data['acc_capacity']
         oneAcc.acc_price = data['acc_price']
-        oneAcc.acc_area = data['acc_area']
         oneAcc.acc_description = data['acc_description']
         oneAcc.acc_user_id = data['acc_user_id']
         oneAcc.acc_type_id = data['acc_type_id']
