@@ -87,7 +87,7 @@
           </a>
         </div>
         <div class="photo-box">
-          <router-link to="./HouseList"><img src="../assets/10.jpg" alt="重庆">
+          <router-link to="./HouseListPage"><img src="../assets/10.jpg" alt="重庆">
             <span class="title">重庆</span>
           </router-link>
 

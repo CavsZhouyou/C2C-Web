@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HomePage from './views/HomePage.vue'
 import HouseListPage from './views/HouseListPage'
+import HouseDetailPage from './views/HouseDetailPage'
 
 Vue.use(Router)
 
@@ -11,8 +12,12 @@ export default new Router({
     name: 'HomePage',
     component: HomePage
   }, {
-    path: '/HouseList',
-    name: "HouseList",
+    path: '/HouseListPage',
+    name: "HouseListPage",
     component: HouseListPage
+  }, {
+    path: '/HouseDetailPage',
+    name: "HouseDetailPage",
+    component: HouseDetailPage
   }]
 })
