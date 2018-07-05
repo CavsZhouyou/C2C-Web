@@ -1,6 +1,8 @@
 <template>
     <div id="app">
-        <router-view/>
+        <transition name="fade" enter-active-class="fadeInLeft" leave-active-class="fadeOutRight" mode="out-in">
+            <router-view/>
+        </transition>
     </div>
 </template>
 

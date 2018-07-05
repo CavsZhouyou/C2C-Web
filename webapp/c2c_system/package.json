@@ -19,7 +19,8 @@
     "node-sass": "^4.9.0",
     "px2rem-loader": "^0.1.9",
     "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.16"
+    "vue-template-compiler": "^2.5.16",
+    "vue2-animate": "^2.0.0"
   },
   "browserslist": [
     "> 1%",

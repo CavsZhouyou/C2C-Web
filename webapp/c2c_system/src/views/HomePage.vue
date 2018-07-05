@@ -1,3 +1,11 @@
+/*
+ * @Author: zhouyou@werun 
+ * @Descriptions: 主页
+ * @Date: 2018-07-05 20:33:56 
+ * @Last Modified by: zhouyou@werun
+ * @Last Modified time: 2018-07-05 21:56:30
+ */
+
 <template>
   <div id="home-page">
     <div class="header">
@@ -79,12 +87,13 @@
           </a>
         </div>
         <div class="photo-box">
-          <a href=""><img src="../assets/10.jpg" alt="重庆">
+          <router-link to="./HouseList"><img src="../assets/10.jpg" alt="重庆">
             <span class="title">重庆</span>
-          </a>
+          </router-link>
+
         </div>
       </div>
-      <transition name="el-fade-in">
+      <transition name="fade">
         <div class="bounce-box" v-show="isRegistShow">
           <div class="content">
             <a href="" @click.prevent="registToggle()">
@@ -125,7 +134,7 @@
           </div>
         </div>
       </transition>
-      <transition name="el-fade-in">
+      <transition name="fade">
         <div class="bounce-box" v-show="isLoginShow">
           <div class="content">
             <a href="" @click.prevent="loginToggle()">
@@ -142,7 +151,7 @@
           </div>
         </div>
       </transition>
-      <transition name="el-fade-in">
+      <transition name="fade">
         <div class="disclaimer-box bounce-box" v-show="isDisclaimerShow">
           <h3>免责声明</h3>
           <div class="content">
