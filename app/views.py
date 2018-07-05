@@ -92,5 +92,76 @@ def travelmessage_id_info(tm_id):
     if tm:
         return tm.to_json()
     else:
-        return jsonify({'success':False}) 
+        return jsonify({'success':False})
+
+@app.route('/accommodation/list/', methods=['GET', 'POST'])
+def accommodation():
+    dic = request.get_json()
+    if 'index' in dic:
+        index = dic['index']
+        return_dic = {}
+        if isinstance(index, int) and index > 0:
+            index = index * 10
+            accommodations = Accommodation.query.all()[index - 10:index - 1]
+            for one_acc in accommodations:
+                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_area, one_acc.acc_price,images}
+            return jsonify(return_dic)
+    else:
+        return jsonify({'success': False})
+
+@app.route('/accommodation/image/<int:acc_id>',methods=['GET'])
+def accommodation_id_image(acc_id):
+    images = AccommodationImage.query.filter(accImage_acc_id=acc_id).all()
+    if images:
+        i = 0
+        dic={}
+        for image in images:
+            dic[i] = image.accImage_url
+            i+=1
+        return jsonify(dic)
+    else:
+        return jsonify({'success': False})
+
+
+@app.route('/accommodation/<int:acc_id>', methods=['GET'])
+def accommodation_id(acc_id):
+    one_acc = Accommodation.query.get(acc_id)
+    if one_acc:
+        return app.send_satic_file('accommodation_info.html')
+    else:
+        return app.send_static_file('404.html')
+
+@app.route('/accommodation/show/<int:acc_id>', methods=['GET'])
+def accommodation_id_info(acc_id):
+    one_acc = TravelMessage.query.get(acc_id)
+    if one_acc:
+        return one_acc.to_json()
+    else:
+        return jsonify({'success': False})
+
+@app.route('/accommodation/add',methods=['GET','POST'])
+def accommodation_add():
+    data=request.get_json()
+    oneAcc = Accommodation(
+        acc_address = data['acc_address'],
+        acc_capacity = data['acc_capacity'],
+        acc_price = data['acc_price'],
+        acc_area = data['acc_area'],
+        acc_description = data['acc_description'],
+        acc_user_id = data['acc_user_id'],
+        acc_type_id = data['acc_type_id'],
+    )
+    db.session.add(oneAcc)
+    db.session.commit()
+    return "{success:True}"
+
+@app.route('/del_one_accommodation/<int:acc_id>')
+def del_one_accommodation(acc_id):
+    oneAcc = Accommodation.query.get(acc_id)
+    if oneAcc:
+        db.session.delete(oneAcc)
+        return "{success:True}"
+    else:
+        return "{success:False}"
+
     

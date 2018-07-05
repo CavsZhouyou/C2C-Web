@@ -150,6 +150,11 @@ class AccommodationType(db.Model):
         return jsonify({
             'acctype_description':self.acctype_description
             })
+# 房源图片
+class AccommodationImage(db.Model):
+    accImage_id = db.Column(db.Integer, primary_key=True)    # 图片ID
+    accImage_acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id')) # 房源ID
+    accImage_url = db.Column(db.String(255))     # 图片url地址
 
 #城市
 class city(db.Model):
