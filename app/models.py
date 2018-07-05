@@ -21,6 +21,20 @@ class User(db.Model):
     contracts_out = db.Column('Contract',backref = 'con_tenant_id')
     contracts_in = db.Column('Contract',backref = 'con_lessor_id') 
 
+    def __init__(self,nickname,password,email,phone,role_id,address,name,id_card):
+        self.nickname = nickname 
+        self.password = password 
+        self.email = email 
+        self.phone = phone 
+        self.registerdate = datetime.now()
+        self.address = address 
+        self.name = name 
+        self.id_card = id_card 
+        if(role_id!=2 and role_id!=3)
+            self.role_id = 3
+        else:
+            self.role_id = role_id
+
     @staticmethod 
     def usercheck(email,password):
         filter_bytes="\' "
@@ -57,13 +71,15 @@ class User(db.Model):
             db.session.add(user)
             db.session.commit()
             return True 
-    def getuserinfo(self):
+    def to_json(self):
         return jsonify({
                 'id':self.user_id,
                 'nickname':self.nickname,
                 'email':self.email,
                 'phone':self.phone,
-                'address':self.acc_address
+                'address':self.acc_address,
+                'name':self.name,
+                'id_card':self.id_card
                 })
         
 
@@ -95,29 +111,66 @@ class Disclaimer(db.Model):
     content = db.Column(db.Text)
     title = db.Column(db.String(100),nullable=False)
     publishdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
-
+    
+    def to_json(self):
+        return jsonify({
+            'title':self.title,
+            'content':self.title,
+            'publishdate:':self.publishdate
+            })
 
 #房源
 class Accommodation(db.Model):
     acc_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)    #房源ID
     acc_address = db.Column(db.String(255))            #房源地址
     acc_capacity = db.Column(db.Integer)               #房源面积
-    acc_price = db.Column(db.Numeric)                  #房源价格
-    acc_area = db.Column(db.String(255))               #房源区域
+    acc_price = db.Column(db.String(100))                  #房源价格
+    acc_city = db.Column(db.Integer,db.Foreignkey('city.city_id'))               #房源区域
     acc_description = db.Column(db.String(255))        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
+    
+    def to_json(self):
+        return jsonify({
+            'acc_address':self.acc_address,
+            'acc_capacity':self.acc_capacity,
+            'acc_price':self.acc_price,
+            'acc_city':self.acc_city,
+            'acc_description':self.acc_description,
+            'acc_user_id':self.acc_user_id,
+            'acc_type_id':self.acc_type_id 
+            })
 
 #房源类型
 class AccommodationType(db.Model):
     acctype_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)  #类型ID
     acctype_description = db.Column(db.String(255))      #类型描述
 
+    def to_json(self):
+        return jsonify({
+            'acctype_description':self.acctype_description
+            })
+# 房源图片
+class AccommodationImage(db.Model):
+    accImage_id = db.Column(db.Integer, primary_key=True)    # 图片ID
+    accImage_acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id')) # 房源ID
+    accImage_url = db.Column(db.String(255))     # 图片url地址
+
+#城市
+class city(db.Model):
+    city_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    city_name = db.Column(db.String(20),nullable=False)
+    city_info = db.Column(db.Text)
+
+    def to_json(self):
+        return jsonify({
+            'city_name':self.city_name,
+            'city_info':self.info
+            })
 #合同
 class Contract(db.Model):
     con_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)      #合同ID
     con_res_id =  db.Column(db.Integer,db.ForeignKey('reservation.res_id'))      #订单ID
-    con_res = db.relationship('reservation',backref=db.backref('contract'))
     con_tenant_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))      #租房者ID
     con_lessor_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))      #出租者ID
     con_tenant_option = db.Column(db.Boolean,default=False)      #租房者同意
@@ -125,14 +178,82 @@ class Contract(db.Model):
     con_state_id = db.Column(db.Integer,db.ForeignKey('constate.state_id'))      #合同状态ID
     con_disclaimer_id = db.Column(db.Integer,db.ForeignKey('disclaimer.disclaimer_id'))   #免责声明ID
 
+    def to_json(self):
+        return jsonify({
+            'con_res_id':self.con_res_id,
+            'con_tenant_id':self.con_tenant_id,
+            'con_lessor_id':self.con_lessor_id,
+            'con_state_id':self.con_state_id,
+            'con_disclaimer_id':self.con_disclaimer_id 
+            })
+
 #合同状态
 class ContractState(db.Model):
     constate_id=db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)       #合同状态ID
     constate_name = db.Column(db.String(50),nullable = False)
     constate_description=db.Column(db.Text)        #合同状态描述
     
+    def to_json(self):
+        return jsonify({
+            'constate_name':self.constate_name,
+            'constate_description':self.constate_description
+            })
 
 class Role(db.Model):
     role_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     role_name = db.Column(db.String(50),nullable=False)
     users = db.Column('User',backref = 'role_id')
+
+    def to_json(self):
+        return jsonify({
+            'role_name':self.role_name,
+            })
+
+#预定信息表
+class Reservation(db.Model):
+    res_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    tenant_id = db.Column(db.Integer(),  nullable=False)   #租房者
+    demand = db.Column(db.Text, nullable=True)              #备注信息
+    acc_id = db.Column(db.Integer,db.Foreignkey('accommodation.acc_id'))
+    state_id = db.Column(db.Integer,db.Foreignkey('ResState.state_id'))
+    date = db.Column(db.DateTime, nullable=False,default = datetime.now)
+    
+    def to_json(self):
+        return jsonify({
+            'tenant_id':self.tenant_id,
+            'demand':self.demand,
+            'acc_id':self.acc_id,
+            'state_id':self.state_id,
+            'date':self.date
+            })
+
+#预订信息表状态
+class ResState(db.Model):
+    state_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    state_name = db.Column(db.String(50),nullable=False)
+    state_info = db.Column(db.Text,nullable=True)
+
+    def to_json(self):
+        return jsonify({
+            'state_name':self.state_name
+            'state_info':self.state_info
+            })
+ 
+#评价表
+class Comment(db.Model):
+    comment_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True) 
+    from_who= db.Column(db.Integer,db.Foreignkey('user.user_id'))
+    to_which = db.Column(db.Integer,db.Foreignkey('Reservation.res_id'))
+    to_who = db.Column(db.Integer,db.Foreignkey('user.user_id'))
+    content = db.Column(db.String(15), nullable=False)
+    date = db.Column(db.DateTime, nullable=False,default = datetime.now)
+
+    def to_json(self):
+        return jsonify({
+            'from_who':self.from_who,
+            'to_which':self.to_which,
+            'to_who':self.to_who,
+            'content':self.content,
+            'date':self.date
+            })
+
