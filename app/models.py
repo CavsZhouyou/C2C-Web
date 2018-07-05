@@ -7,8 +7,20 @@ db = SQLAlchemy()
 
 #通过继承db.Model,可以直接由迁移程序将模型映射到数据库
 class User(db.Model):
-    user_id = db.Column(db.Integer,primary_key=True)
-    
+    user_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    nickname = db.Column(db.String(100),nullable=False)
+    password = db.Column(db.String(100),nullable=False)
+    email = db.Column(db.String(100),nullable=False)
+    phone = db.Column(db.String(50),nullable=False)
+    registerdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
+    role_id = db.Column(db.Integer,nullable=False,db.ForeignKey(role.role_id))
+    address = db.Column(db.String(100),nullable=False)
+    name = db.Column(db.String(100),nullable=False)
+    id_card = db.Column(db.String(100),nullable=False)
+    #方便调用一个用户的所有订单
+    contracts_out = db.Column('Contract',backref = 'con_tenant_id')
+    contracts_in = db.Column('Contract',backref = 'con_lessor_id') 
+
     @staticmethod 
     def usercheck(email,password):
         filter_bytes="\' "
@@ -107,9 +119,7 @@ class Contract(db.Model):
     con_res_id =  db.Column(db.Integer,db.ForeignKey('reservation.res_id'))      #订单ID
     con_res = db.relationship('reservation',backref=db.backref('contract'))
     con_tenant_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))      #租房者ID
-    con_tenant = db.relationship('user',backref=db.backref('contract'))
     con_lessor_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))      #出租者ID
-    con_lessor = db.relationship('user',backref=db.backref('contract'))
     con_tenant_option = db.Column(db.Boolean,default=False)      #租房者同意
     con_lessor_option = db.Column(db.Boolean,default=False)      #出租者同意
     con_state_id = db.Column(db.Integer,db.ForeignKey('constate.state_id'))      #合同状态ID
@@ -118,7 +128,11 @@ class Contract(db.Model):
 #合同状态
 class ContractState(db.Model):
     constate_id=db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)       #合同状态ID
-    constate_description=db.Column(db.String)        #合同状态描述
+    constate_name = db.Column(db.String(50),nullable = False)
+    constate_description=db.Column(db.Text)        #合同状态描述
     
 
-
+class Role(db.Model):
+    role_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    role_name = db.Column(db.String(50),nullable=False)
+    users = db.Column('User',backref = 'role_id')
