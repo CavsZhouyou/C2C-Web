@@ -5,7 +5,7 @@
  * @Descriptions: 查看房源订单页面 
  * @Date: 2018-07-06 12:37:43 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 12:55:24
+ * @Last Modified time: 2018-07-06 13:06:37
  */
 
 
@@ -23,12 +23,10 @@
                 <span>1张床</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>1个公共卫生间</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>最多住2人</span>
-                <br>
-                <br>
                 <br>&nbsp;&nbsp;&nbsp;
-                <span>租户姓名：大雄</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>租户电话：15550671537</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>出租金额：1000</span>
+                <p class="info">
+                    欢迎来到DUDUSA 1.<br>这里有个小型画室,可以和我们一起画油画,画盘子,画包包等很多好玩的东西(画画是收费项目,住宿客人有折扣) ......
+                </p>
                 <span class="delete">
                     <i class="el-icon-circle-close"></i>
                     <a href="">删除房源</a>
@@ -48,12 +46,10 @@
                 <span>1张床</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>1个公共卫生间</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>最多住2人</span>
-                <br>
-                <br>
                 <br>&nbsp;&nbsp;&nbsp;
-                <span>租户姓名：大雄</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>租户电话：15550671537</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>出租金额：1000</span>
+                <p class="info">
+                    欢迎来到DUDUSA 1.<br>这里有个小型画室,可以和我们一起画油画,画盘子,画包包等很多好玩的东西(画画是收费项目,住宿客人有折扣) ......
+                </p>
                 <span class="delete">
                     <i class="el-icon-circle-close"></i>
                     <a href="">删除房源</a>
@@ -73,12 +69,10 @@
                 <span>1张床</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>1个公共卫生间</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>最多住2人</span>
-                <br>
-                <br>
                 <br>&nbsp;&nbsp;&nbsp;
-                <span>租户姓名：大雄</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>租户电话：15550671537</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>出租金额：1000</span>
+                <p class="info">
+                    欢迎来到DUDUSA 1.<br>这里有个小型画室,可以和我们一起画油画,画盘子,画包包等很多好玩的东西(画画是收费项目,住宿客人有折扣) ......
+                </p>
                 <span class="delete">
                     <i class="el-icon-circle-close"></i>
                     <a href="">删除房源</a>
@@ -98,12 +92,10 @@
                 <span>1张床</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>1个公共卫生间</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>最多住2人</span>
-                <br>
-                <br>
                 <br>&nbsp;&nbsp;&nbsp;
-                <span>租户姓名：大雄</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>租户电话：15550671537</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>出租金额：1000</span>
+                <p class="info">
+                    欢迎来到DUDUSA 1.<br>这里有个小型画室,可以和我们一起画油画,画盘子,画包包等很多好玩的东西(画画是收费项目,住宿客人有折扣) ......
+                </p>
                 <span class="delete">
                     <i class="el-icon-circle-close"></i>
                     <a href="">删除房源</a>
@@ -149,10 +141,15 @@ export default ViewBuildingPage;
                 height: 100px;
             }
 
+            .info {
+                display: inline-block;
+                width: 460px;
+            }
+
             .delete {
                 position: absolute;
-                margin-left: 80px;
-                margin-top: -45px;
+                margin-left: 35px;
+                // margin-top: -45px;
                 color: #e51c23;
 
                 a {
@@ -162,8 +159,8 @@ export default ViewBuildingPage;
 
             .modify {
                 position: absolute;
-                margin-left: 80px;
-                margin-top: -10px;
+                margin-left: 35px;
+                margin-top: 30px;
                 color: #3498db;
 
                 a {
@@ -175,9 +172,3 @@ export default ViewBuildingPage;
 }
 </style>
 
-
- 
- * @Date: 2018-07-06 12:51:32 
- * @Last Modified by:   zhouyou@werun 
- * @Last Modified time: 2018-07-06 12:51:32 
- */
