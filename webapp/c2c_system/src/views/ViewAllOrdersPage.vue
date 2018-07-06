@@ -3,12 +3,12 @@
  * @Descriptions: 查看订单详情页面 
  * @Date: 2018-07-06 11:31:56 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 11:42:56
+ * @Last Modified time: 2018-07-06 12:41:15
  */
 
 
 <template>
-    <div id="view-all-orders">
+    <div id="view-all-orders-page">
         <div class="line">
             <h2>查看所有订单</h2>
         </div>
@@ -113,14 +113,14 @@
 
 
 <script>
-const ViewAllOrders = {};
+const ViewAllOrdersPage = {};
 
-export default ViewAllOrders;
+export default ViewAllOrdersPage;
 </script>
 
 
 <style lang="scss" scoped>
-#view-all-orders {
+#view-all-orders-page {
     padding: 30px;
     text-align: left;
 

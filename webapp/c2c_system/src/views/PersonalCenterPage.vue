@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 11:44:14
+ * @Last Modified time: 2018-07-06 12:45:57
  */
 
 
@@ -31,7 +31,10 @@
         <div class="content clearfix">
 
             <div class="container">
-                <router-view></router-view>
+                <transition name="fade" enter-active-class="fadeInLeft" leave-active-class="fadeOutRight" mode="out-in">
+                    <router-view></router-view>
+                </transition>
+
             </div>
             <div class="sidebar">
                 <ul>
@@ -57,13 +60,13 @@
                         <router-link to="">查看已发布房源</router-link>
                     </li>
                     <li>
-                        <router-link to="">查看房源订单</router-link>
+                        <router-link to="/PersonalCenterPage/ViewBuildingOrdersPage">查看房源订单</router-link>
                     </li>
                     <li>
                         <router-link to="">发布预定订单</router-link>
                     </li>
                     <li>
-                        <router-link to="/PersonalCenterPage/ViewAllOrders">查看所有订单</router-link>
+                        <router-link to="/PersonalCenterPage/ViewAllOrdersPage">查看所有订单</router-link>
                     </li>
                     <li>
                         <router-link to="">个人资料</router-link>
