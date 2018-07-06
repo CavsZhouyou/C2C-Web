@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 11:06:11
+ * @Last Modified time: 2018-07-06 11:44:14
  */
 
 
@@ -63,7 +63,7 @@
                         <router-link to="">发布预定订单</router-link>
                     </li>
                     <li>
-                        <router-link to="">查看所有订单订单</router-link>
+                        <router-link to="/PersonalCenterPage/ViewAllOrders">查看所有订单</router-link>
                     </li>
                     <li>
                         <router-link to="">个人资料</router-link>

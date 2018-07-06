@@ -9,6 +9,7 @@ import ReleaseDisclaimerPage from './views/ReleaseDisclaimerPage'
 import ReleaseTravelInformationPage from './views/ReleaseTravelInformationPage'
 import ReleaseBuildingRecommendPage from './views/ReleaseBuildingRecommendPage'
 import ViewReserveOrderPage from './views/ViewReserveOrderPage'
+import ViewAllOrders from './views/ViewAllOrders'
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
         path: 'ViewReserveOrderPage',
         name: "ViewReserveOrderPage",
         component: ViewReserveOrderPage,
+      },
+      {
+        path: 'ViewAllOrders',
+        name: "ViewAllOrders",
+        component: ViewAllOrders,
       }
     ]
   }]
