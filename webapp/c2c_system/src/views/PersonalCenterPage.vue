@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 13:00:35
+ * @Last Modified time: 2018-07-06 13:50:26
  */
 
 
@@ -131,13 +131,14 @@ export default PersonalCenterPage;
     }
 
     .content {
+        position: relative;
         background: #f2f2f2;
         min-height: 880px;
 
         .sidebar {
             position: absolute;
-            margin-top: -810px;
-            margin-left: 360px;
+            top: 20px;
+            left: 350px;
 
             ul {
                 list-style: none;
@@ -180,7 +181,7 @@ export default PersonalCenterPage;
             margin: 0 auto;
             margin-top: 30px;
             width: 800px;
-            height: 800px;
+            min-height: 800px;
             border-radius: 20px;
             background: #fff;
         }
