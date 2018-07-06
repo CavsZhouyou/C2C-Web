@@ -3,7 +3,7 @@
  * @Descriptions: 主页
  * @Date: 2018-07-05 20:33:56 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 10:45:06
+ * @Last Modified time: 2018-07-06 14:17:50
  */
 
 <template>
@@ -17,7 +17,7 @@
         </div>
         <div class="right-bar">
           <span v-if="isLogined">
-            <a href="">个人中心</a>
+            <router-link to="/PersonalCenterPage">个人中心</router-link>
           </span>
           <span v-if="!isLogined">
             <a href="" @click.prevent="registToggle()">注册</a>

@@ -3,7 +3,7 @@
  * @Descriptions: 房屋详情页面 
  * @Date: 2018-07-05 21:58:39 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 08:33:46
+ * @Last Modified time: 2018-07-06 14:16:39
  */
 
 
@@ -63,7 +63,9 @@
                         共收到203条评价 · 已验证
                     </span>
                 </div>
-                <button class="order">马上预定</button>
+                <button class="order">
+                    <router-link to="/PersonalCenterPage/ReleaseOrderPage"> 马上预定</router-link>
+                </button>
             </div>
             <div class="comment-box clearfix">
                 <div class="line">
@@ -221,6 +223,10 @@ export default HouseDetailPage;
                 height: 50px;
                 background: #ff5a5f;
                 color: #fff;
+
+                a {
+                    color: #fff;
+                }
             }
         }
 

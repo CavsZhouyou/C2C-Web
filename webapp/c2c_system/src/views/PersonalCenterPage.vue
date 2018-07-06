@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 14:13:24
+ * @Last Modified time: 2018-07-06 14:22:07
  */
 
 
@@ -91,15 +91,16 @@ export default PersonalCenterPage;
 <style lang="scss" scoped>
 #personal-center-page {
     .header {
-        height: 60px;
-        line-height: 60px;
+        height: 50px;
+        line-height: 50px;
+        background: url("../assets/bg.png");
 
         .container {
             width: 1100px;
             margin: 0 auto;
 
             a {
-                color: #000;
+                color: #fff;
             }
 
             a:hover {
@@ -118,6 +119,7 @@ export default PersonalCenterPage;
                 float: right;
                 span {
                     margin-left: 20px;
+                    color: #fff;
                 }
 
                 .head-img {
