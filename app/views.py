@@ -224,6 +224,8 @@ def accommodation_delete(acc_id):
 @app.route('/accommodation/update/',methods=['GET','POST'])
 def accommodation_update():
     # 判断是否是出租者
+    if not g.current_user:
+        return jsonify({'success': False})
     if g.current_user.role_id != 2:
         return jsonify({'success': False})
     # 判断是否是出租者拥有的房源
@@ -308,3 +310,22 @@ def browse():
             return jsonify(return_dic)
     else:
         return jsonify({'success': False})
+
+
+@app.route('/rolechange',methods=['POST'])
+def role_change():
+    if g.current_user:
+        if g.current_user.role_id == 0:
+            data = request.get_json()
+            user_id = data['user_id']
+            role = data['role']
+            if(role>=1):
+                user = User.query.get(user_id)
+                user.role_id = role 
+                db.session.commit()
+            else:
+                return jsonify({'success':False})
+        else: 
+                return jsonify({'success':False})
+     else:
+                return jsonify({'success':False})
