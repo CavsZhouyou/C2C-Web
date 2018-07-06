@@ -8,6 +8,7 @@ import UserManagePage from './views/UserManagePage'
 import ReleaseDisclaimerPage from './views/ReleaseDisclaimerPage'
 import ReleaseTravelInformationPage from './views/ReleaseTravelInformationPage'
 import ReleaseBuildingRecommendPage from './views/ReleaseBuildingRecommendPage'
+import ViewReserveOrderPage from './views/ViewReserveOrderPage'
 
 Vue.use(Router)
 
@@ -46,6 +47,11 @@ export default new Router({
         path: 'ReleaseBuildingRecommendPage',
         name: "ReleaseBuildingRecommendPage",
         component: ReleaseBuildingRecommendPage,
+      },
+      {
+        path: 'ViewReserveOrderPage',
+        name: "ViewReserveOrderPage",
+        component: ViewReserveOrderPage,
       }
     ]
   }]
