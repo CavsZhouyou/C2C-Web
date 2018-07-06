@@ -327,5 +327,5 @@ def role_change():
                 return jsonify({'success':False})
         else: 
                 return jsonify({'success':False})
-     else:
-                return jsonify({'success':False})
+    else:
+        return jsonify({'success':False})
