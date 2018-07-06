@@ -15,6 +15,7 @@ import ViewBuildingPage from './views/ViewBuildingPage'
 import ReleaseBuildingPage from './views/ReleaseBuildingPage'
 import ReleaseOrderPage from './views/ReleaseOrderPage'
 import PersonalDataPage from './views/PersonalDataPage'
+import ChangePasswordPage from './views/ChangePasswordPage'
 
 Vue.use(Router)
 
@@ -88,6 +89,11 @@ export default new Router({
         path: 'PersonalDataPage',
         name: "PersonalDataPage",
         component: PersonalDataPage,
+      },
+      {
+        path: 'ChangePasswordPage',
+        name: "ChangePasswordPage",
+        component: ChangePasswordPage,
       }
     ]
   }]

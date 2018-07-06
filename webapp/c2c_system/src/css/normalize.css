@@ -610,7 +610,7 @@ th {
     padding: 2.9952px 13.44px;
     background-color: #169bd5;
     color: #fff;
-    font-weight: bold;
+    /* font-weight: bold; */
     border-radius: 5px;
     cursor: pointer;
 }

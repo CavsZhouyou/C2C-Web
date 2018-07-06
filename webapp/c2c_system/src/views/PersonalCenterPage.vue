@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 14:05:47
+ * @Last Modified time: 2018-07-06 14:13:24
  */
 
 
@@ -72,7 +72,7 @@
                         <router-link to="/PersonalCenterPage/PersonalDataPage">个人资料</router-link>
                     </li>
                     <li>
-                        <router-link to="">修改密码</router-link>
+                        <router-link to="/PersonalCenterPage/ChangePasswordPage">修改密码</router-link>
                     </li>
                 </ul>
             </div>
