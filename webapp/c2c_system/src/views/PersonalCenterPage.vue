@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 09:28:40
+ * @Last Modified time: 2018-07-06 10:11:41
  */
 
 
@@ -36,40 +36,40 @@
             <div class="sidebar">
                 <ul>
                     <li>
-                        <a href="">用户管理</a>
+                        <router-link to="/PersonalCenterPage/UserManagePage">用户管理</router-link>
                     </li>
                     <li>
-                        <a href="">发布免责声明</a>
+                        <router-link to="">发布免责声明</router-link>
                     </li>
                     <li>
-                        <a href="">发布旅游信息</a>
+                        <router-link to="">发布旅游信息</router-link>
                     </li>
                     <li>
-                        <a href="">发布住宿推荐信息</a>
+                        <router-link to="">发布住宿推荐信息</router-link>
                     </li>
                     <li>
-                        <a href="">查看预订单</a>
+                        <router-link to="">查看预订单</router-link>
                     </li>
                     <li>
-                        <a href="">发布房源信息</a>
+                        <router-link to="">发布房源信息</router-link>
                     </li>
                     <li>
-                        <a href="">查看已发布房源</a>
+                        <router-link to="">查看已发布房源</router-link>
                     </li>
                     <li>
-                        <a href="">查看房源订单</a>
+                        <router-link to="">查看房源订单</router-link>
                     </li>
                     <li>
-                        <a href="">发布预定订单</a>
+                        <router-link to="">发布预定订单</router-link>
                     </li>
                     <li>
-                        <a href="">查看所有订单订单</a>
+                        <router-link to="">查看所有订单订单</router-link>
                     </li>
                     <li>
-                        <a href="">个人资料</a>
+                        <router-link to="">个人资料</router-link>
                     </li>
                     <li>
-                        <a href="">修改密码</a>
+                        <router-link to="">修改密码</router-link>
                     </li>
                 </ul>
             </div>
