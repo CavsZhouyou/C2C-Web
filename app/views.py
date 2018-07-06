@@ -274,3 +274,37 @@ def accommodation_image_del(accImage_id):
         return jsonify({'success':True})
     except Exception:
         return jsonify({'success':False})
+
+@app.route('/reservation/add',methods=['GET','POST'])
+def reservation_add():
+    data=request.get_json()
+    oneRes = Reservation(
+        res_id = data['res_id'],
+        tenant_id = data['tenant_id'],
+        demand = data['demand'],
+        acc_id = data['acc_area'],
+        state_id= data['state_id '],
+        date = data['date'],
+    )
+    try:
+        db.session.add(oneRes)
+        db.session.commit()
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
+
+
+@app.route('/accommodation/browse/', methods=['GET', 'POST'])
+def browse():
+    dic = request.get_json()
+    if 'index' in dic:
+        index = dic['index']
+        return_dic = {}
+        if isinstance(index, int) and index > 0:
+            index = index * 10
+            accommodations = Accommodation.query.eq('acc_city')[index - 10:index - 1]
+            for one_acc in accommodations:
+                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_address,one_acc.acc_capacity, one_acc.acc_price}
+            return jsonify(return_dic)
+    else:
+        return jsonify({'success': False})
