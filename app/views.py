@@ -181,7 +181,7 @@ def accommodation_add():
 #删除单个房源信息接口
 @app.route('/del_one_accommodation/<int:acc_id>')
 def del_one_accommodation(acc_id):
-    if g.current_user.role_id != 1:
+    if g.current_user.role_id != 2:
         return jsonify({'success':False})
     oneAcc = Accommodation.query.get(acc_id)
     if oneAcc:
@@ -199,7 +199,7 @@ def del_one_accommodation(acc_id):
 @app.route('/accommodation/delete/<int:acc_id>',methods=['GET'])
 def accommodation_delete(acc_id):
     #判断是否是出租者
-    if g.current_user.role_id != 2:
+    if g.current_user.role_id != 3:
         return jsonify({'success': False})
     #判断是否是出租者拥有的房源
     oneAcc=Accommodation.query.get(acc_id)
@@ -226,7 +226,7 @@ def accommodation_update():
     # 判断是否是出租者
     if not g.current_user:
         return jsonify({'success': False})
-    if g.current_user.role_id != 2:
+    if g.current_user.role_id != 3:
         return jsonify({'success': False})
     # 判断是否是出租者拥有的房源
     data = request.get_json()
@@ -315,11 +315,11 @@ def browse():
 @app.route('/rolechange',methods=['POST'])
 def role_change():
     if g.current_user:
-        if g.current_user.role_id == 0:
+        if g.current_user.role_id == 1:
             data = request.get_json()
             user_id = data['user_id']
             role = data['role']
-            if(role>=1):
+            if(role>=2):
                 user = User.query.get(user_id)
                 user.role_id = role 
                 db.session.commit()
