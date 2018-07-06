@@ -5,6 +5,7 @@ import HouseListPage from './views/HouseListPage'
 import HouseDetailPage from './views/HouseDetailPage'
 import PersonalCenterPage from './views/PersonalCenterPage'
 import UserManagePage from './views/UserManagePage'
+import ReleaseDisclaimerPage from './views/ReleaseDisclaimerPage'
 
 Vue.use(Router)
 
@@ -29,6 +30,10 @@ export default new Router({
       path: 'UserManagePage',
       name: 'UserManagePage',
       component: UserManagePage
+    }, {
+      path: 'ReleaseDisclaimerPage',
+      name: "ReleaseDisclaimerPage",
+      component: ReleaseDisclaimerPage
     }]
   }]
 })
