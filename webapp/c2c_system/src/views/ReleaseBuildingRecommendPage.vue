@@ -1,18 +1,18 @@
 /*
  * @Author: zhouyou@werun 
- * @Descriptions: 发布旅游信息界面 
- * @Date: 2018-07-06 10:40:22 
+ * @Descriptions: 发布房源推荐信息页面
+ * @Date: 2018-07-06 10:55:12 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 10:57:45
+ * @Last Modified time: 2018-07-06 10:58:04
  */
 
 
 <template>
-    <div id="release-travel-information-page">
+    <div id="release-bujilding-recommend-page">
         <div class="line">
-            <h2>发布旅游信息</h2>
+            <h2>发布房屋推荐信息</h2>
         </div>
-        <textarea v-model="conetnt" placeholder="请输入旅游信息" class="content"></textarea>
+        <textarea v-model="conetnt" placeholder="请输入房屋推荐信息" class="content"></textarea>
         <div class="button-container">
             <button class="common-button">点击发布</button>
         </div>
@@ -21,13 +21,13 @@
 
 
 <script>
-const ReleaseTravelInformationPage = {};
+const ReleaseBuildingRecommendPage = {};
 
-export default ReleaseTravelInformationPage;
+export default ReleaseBuildingRecommendPage;
 </script>
 
 <style lang="scss" scoped>
-#release-travel-information-page {
+#release-bujilding-recommend-page {
     padding: 30px;
     text-align: left;
 
@@ -53,4 +53,3 @@ export default ReleaseTravelInformationPage;
     }
 }
 </style>
-
