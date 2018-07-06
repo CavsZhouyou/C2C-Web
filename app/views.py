@@ -6,7 +6,7 @@ import re
 
 @app.route('/')
 def index():
-    return "HelloWorld"
+    return app.send_static_file("src/views/HomePage.vue")
 
 @app.before_request
 def before_request():
@@ -181,7 +181,7 @@ def accommodation_add():
 #删除单个房源信息接口
 @app.route('/del_one_accommodation/<int:acc_id>')
 def del_one_accommodation(acc_id):
-    if g.current_user.role_id != 1:
+    if g.current_user.role_id != 2:
         return jsonify({'success':False})
     oneAcc = Accommodation.query.get(acc_id)
     if oneAcc:
@@ -199,7 +199,7 @@ def del_one_accommodation(acc_id):
 @app.route('/accommodation/delete/<int:acc_id>',methods=['GET'])
 def accommodation_delete(acc_id):
     #判断是否是出租者
-    if g.current_user.role_id != 2:
+    if g.current_user.role_id != 3:
         return jsonify({'success': False})
     #判断是否是出租者拥有的房源
     oneAcc=Accommodation.query.get(acc_id)
@@ -224,7 +224,9 @@ def accommodation_delete(acc_id):
 @app.route('/accommodation/update/',methods=['GET','POST'])
 def accommodation_update():
     # 判断是否是出租者
-    if g.current_user.role_id != 2:
+    if not g.current_user:
+        return jsonify({'success': False})
+    if g.current_user.role_id != 3:
         return jsonify({'success': False})
     # 判断是否是出租者拥有的房源
     data = request.get_json()
@@ -273,4 +275,57 @@ def accommodation_image_del(accImage_id):
         db.session.commit()
         return jsonify({'success':True})
     except Exception:
+        return jsonify({'success':False})
+
+@app.route('/reservation/add',methods=['GET','POST'])
+def reservation_add():
+    data=request.get_json()
+    oneRes = Reservation(
+        res_id = data['res_id'],
+        tenant_id = data['tenant_id'],
+        demand = data['demand'],
+        acc_id = data['acc_area'],
+        state_id= data['state_id '],
+        date = data['date'],
+    )
+    try:
+        db.session.add(oneRes)
+        db.session.commit()
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
+
+
+@app.route('/accommodation/browse/', methods=['GET', 'POST'])
+def browse():
+    dic = request.get_json()
+    if 'index' in dic:
+        index = dic['index']
+        return_dic = {}
+        if isinstance(index, int) and index > 0:
+            index = index * 10
+            accommodations = Accommodation.query.eq('acc_city')[index - 10:index - 1]
+            for one_acc in accommodations:
+                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_address,one_acc.acc_capacity, one_acc.acc_price}
+            return jsonify(return_dic)
+    else:
+        return jsonify({'success': False})
+
+
+@app.route('/rolechange',methods=['POST'])
+def role_change():
+    if g.current_user:
+        if g.current_user.role_id == 1:
+            data = request.get_json()
+            user_id = data['user_id']
+            role = data['role']
+            if(role>=2):
+                user = User.query.get(user_id)
+                user.role_id = role 
+                db.session.commit()
+            else:
+                return jsonify({'success':False})
+        else: 
+                return jsonify({'success':False})
+    else:
         return jsonify({'success':False})

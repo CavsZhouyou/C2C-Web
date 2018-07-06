@@ -30,8 +30,8 @@ class User(db.Model):
         self.address = address 
         self.name = name 
         self.id_card = id_card 
-        if(role_id!=2 and role_id!=3):
-            self.role_id = 3
+        if(role_id!=3 and role_id!=4):
+            self.role_id = 4
         else:
             self.role_id = role_id
 
