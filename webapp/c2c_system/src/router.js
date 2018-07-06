@@ -14,6 +14,7 @@ import ViewBuildingOrdersPage from './views/VIewBuildingOrdersPage'
 import ViewBuildingPage from './views/ViewBuildingPage'
 import ReleaseBuildingPage from './views/ReleaseBuildingPage'
 import ReleaseOrderPage from './views/ReleaseOrderPage'
+import PersonalDataPage from './views/PersonalDataPage'
 
 Vue.use(Router)
 
@@ -82,6 +83,11 @@ export default new Router({
         path: 'ReleaseOrderPage',
         name: "ReleaseOrderPage",
         component: ReleaseOrderPage,
+      },
+      {
+        path: 'PersonalDataPage',
+        name: "PersonalDataPage",
+        component: PersonalDataPage,
       }
     ]
   }]
