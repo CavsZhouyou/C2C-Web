@@ -6,7 +6,7 @@ import re
 
 @app.route('/')
 def index():
-    return "HelloWorld"
+    return app.send_static_file("src/views/HomePage.vue")
 
 @app.before_request
 def before_request():
