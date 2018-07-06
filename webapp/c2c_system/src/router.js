@@ -11,6 +11,7 @@ import ReleaseBuildingRecommendPage from './views/ReleaseBuildingRecommendPage'
 import ViewReserveOrderPage from './views/ViewReserveOrderPage'
 import ViewAllOrdersPage from './views/ViewAllOrdersPage'
 import ViewBuildingOrdersPage from './views/VIewBuildingOrdersPage'
+import ViewBuildingPage from './views/ViewBuildingPage'
 
 Vue.use(Router)
 
@@ -64,6 +65,11 @@ export default new Router({
         path: 'ViewBuildingOrdersPage',
         name: "ViewBuildingOrdersPage",
         component: ViewBuildingOrdersPage,
+      },
+      {
+        path: 'ViewBuildingPage',
+        name: "ViewBuildingPage",
+        component: ViewBuildingPage,
       }
     ]
   }]
