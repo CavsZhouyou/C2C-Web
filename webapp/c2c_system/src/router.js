@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HomePage from './views/HomePage.vue'
 import HouseListPage from './views/HouseListPage'
 import HouseDetailPage from './views/HouseDetailPage'
+import PersonalCenterPage from './views/PersonalCenterPage'
 
 Vue.use(Router)
 
@@ -19,5 +20,9 @@ export default new Router({
     path: '/HouseDetailPage',
     name: "HouseDetailPage",
     component: HouseDetailPage
+  }, {
+    path: '/PersonalCenterPage',
+    name: 'PersonalCenterPage',
+    component: PersonalCenterPage
   }]
 })

@@ -129,11 +129,13 @@
                     </div>
                 </div>
                 <div class="photo-box first">
-                    <el-carousel trigger="hover" height="200px">
-                        <el-carousel-item v-for="(item,index) in photos4" :key="index">
-                            <img :src="item" alt="">
-                        </el-carousel-item>
-                    </el-carousel>
+                    <router-link to="./HouseDetailPage">
+                        <el-carousel trigger="hover" height="200px">
+                            <el-carousel-item v-for="(item,index) in photos4" :key="index">
+                                <img :src="item" alt="">
+                            </el-carousel-item>
+                        </el-carousel>
+                    </router-link>
                     <div class="info">
                         <br>
                         <span class="price">￥ 562 元每晚</span>

@@ -1,0 +1,186 @@
+/*
+ * @Author: zhouyou@werun 
+ * @Descriptions: 个人中心页面 
+ * @Date: 2018-07-06 08:29:15 
+ * @Last Modified by: zhouyou@werun
+ * @Last Modified time: 2018-07-06 09:28:40
+ */
+
+
+<template>
+    <div id="personal-center-page">
+        <div class="header">
+            <div class="container clearfix">
+                <div class="left-bar">
+                    <span>
+                        <a href="">首页</a>
+                    </span>
+                    <span>
+                        <a href="">社区</a>
+                    </span>
+                    <span>
+                        <a href="">帮助</a>
+                    </span>
+                </div>
+                <div class="right-bar">
+                    <img src="../assets/19.jpg" alt="" class="head-img">
+                    <span class="name">Lakers</span>
+                </div>
+            </div>
+        </div>
+        <div class="content clearfix">
+
+            <div class="container">
+                <router-view></router-view>
+            </div>
+            <div class="sidebar">
+                <ul>
+                    <li>
+                        <a href="">用户管理</a>
+                    </li>
+                    <li>
+                        <a href="">发布免责声明</a>
+                    </li>
+                    <li>
+                        <a href="">发布旅游信息</a>
+                    </li>
+                    <li>
+                        <a href="">发布住宿推荐信息</a>
+                    </li>
+                    <li>
+                        <a href="">查看预订单</a>
+                    </li>
+                    <li>
+                        <a href="">发布房源信息</a>
+                    </li>
+                    <li>
+                        <a href="">查看已发布房源</a>
+                    </li>
+                    <li>
+                        <a href="">查看房源订单</a>
+                    </li>
+                    <li>
+                        <a href="">发布预定订单</a>
+                    </li>
+                    <li>
+                        <a href="">查看所有订单订单</a>
+                    </li>
+                    <li>
+                        <a href="">个人资料</a>
+                    </li>
+                    <li>
+                        <a href="">修改密码</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<script>
+const PersonalCenterPage = {};
+
+export default PersonalCenterPage;
+</script>
+
+
+<style lang="scss" scoped>
+#personal-center-page {
+    .header {
+        height: 60px;
+        line-height: 60px;
+
+        .container {
+            width: 1100px;
+            margin: 0 auto;
+
+            a {
+                color: #000;
+            }
+
+            a:hover {
+                color: #ff5a5f;
+            }
+
+            .left-bar {
+                float: left;
+
+                span {
+                    margin-right: 20px;
+                }
+            }
+
+            .right-bar {
+                float: right;
+                span {
+                    margin-left: 20px;
+                }
+
+                .head-img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 20px;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+
+    .content {
+        background: #f2f2f2;
+        min-height: 880px;
+
+        .sidebar {
+            position: absolute;
+            margin-top: -810px;
+            margin-left: 360px;
+
+            ul {
+                list-style: none;
+
+                li {
+                    margin-bottom: 6px;
+                    width: 150px;
+                    height: 40px;
+                    background: #fff;
+                    line-height: 40px;
+                    font-weight: bold;
+
+                    a {
+                        display: inline-block;
+                        width: 150px;
+                        height: 40px;
+                        font-size: 14px;
+                        color: #667d94;
+                    }
+
+                    a:hover {
+                        background: #3891d7;
+                        color: #fff;
+                    }
+                }
+            }
+
+            li {
+                width: 150px;
+                height: 40px;
+                background: #fff;
+
+                a {
+                    color: #667d94;
+                }
+            }
+        }
+
+        .container {
+            margin: 0 auto;
+            margin-top: 30px;
+            width: 800px;
+            height: 800px;
+            border-radius: 20px;
+            background: #fff;
+        }
+    }
+}
+</style>

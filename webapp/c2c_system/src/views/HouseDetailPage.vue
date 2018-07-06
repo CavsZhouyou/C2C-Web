@@ -3,7 +3,7 @@
  * @Descriptions: 房屋详情页面 
  * @Date: 2018-07-05 21:58:39 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-05 22:51:35
+ * @Last Modified time: 2018-07-06 08:33:46
  */
 
 
@@ -89,7 +89,7 @@
                     <p>整个房屋的设计非常用心，小姐姐是个非常有品位的人，房源离地铁站大概500米，很近，步行至春熙路太古里5到10分钟。总之体验挺好的。</p>
                 </div>
                 <div class="comment-line line">
-                    <img src="../assets/20.jpg" class="head-img">
+                    <img src="../assets/21.jpg" class="head-img">
                     <span class="name">阿罗</span>
                     &nbsp;&nbsp;&nbsp;
                     <br>
