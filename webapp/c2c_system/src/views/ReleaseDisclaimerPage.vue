@@ -3,7 +3,7 @@
  * @Descriptions:发布免责声明页面 
  * @Date: 2018-07-06 10:16:53 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 10:36:55
+ * @Last Modified time: 2018-07-06 10:48:39
  */
 
 
@@ -52,6 +52,7 @@ export default ReleaseDisclaimerPage;
     .disclaimer-content {
         width: 100%;
         min-height: 600px;
+        border: 1px solid #bbb;
     }
 
     .common-button {

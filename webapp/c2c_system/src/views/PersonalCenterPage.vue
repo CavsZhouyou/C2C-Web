@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 10:21:57
+ * @Last Modified time: 2018-07-06 10:50:17
  */
 
 
@@ -42,7 +42,7 @@
                         <router-link to="/PersonalCenterPage/ReleaseDisclaimerPage">发布免责声明</router-link>
                     </li>
                     <li>
-                        <router-link to="">发布旅游信息</router-link>
+                        <router-link to="/PersonalCenterPage/ReleaseTravelInformationPage">发布旅游信息</router-link>
                     </li>
                     <li>
                         <router-link to="">发布住宿推荐信息</router-link>

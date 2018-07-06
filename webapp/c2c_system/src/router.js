@@ -6,6 +6,7 @@ import HouseDetailPage from './views/HouseDetailPage'
 import PersonalCenterPage from './views/PersonalCenterPage'
 import UserManagePage from './views/UserManagePage'
 import ReleaseDisclaimerPage from './views/ReleaseDisclaimerPage'
+import ReleaseTravelInformationPage from './views/ReleaseTravelInformationPage'
 
 Vue.use(Router)
 
@@ -27,13 +28,19 @@ export default new Router({
     name: 'PersonalCenterPage',
     component: PersonalCenterPage,
     children: [{
-      path: 'UserManagePage',
-      name: 'UserManagePage',
-      component: UserManagePage
-    }, {
-      path: 'ReleaseDisclaimerPage',
-      name: "ReleaseDisclaimerPage",
-      component: ReleaseDisclaimerPage
-    }]
+        path: 'UserManagePage',
+        name: 'UserManagePage',
+        component: UserManagePage
+      }, {
+        path: 'ReleaseDisclaimerPage',
+        name: "ReleaseDisclaimerPage",
+        component: ReleaseDisclaimerPage
+      },
+      {
+        path: 'ReleaseTravelInformationPage',
+        name: "ReleaseTravelInformationPage",
+        component: ReleaseTravelInformationPage,
+      }
+    ]
   }]
 })

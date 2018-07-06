@@ -3,7 +3,7 @@
  * @Descriptions: 主页
  * @Date: 2018-07-05 20:33:56 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-05 21:56:30
+ * @Last Modified time: 2018-07-06 10:45:06
  */
 
 <template>
@@ -408,23 +408,6 @@ export default HomePage;
 
                 .check-box {
                     float: left;
-                }
-
-                ::-webkit-input-placeholder {
-                    /* WebKit browsers */
-                    color: #999;
-                }
-                :-moz-placeholder {
-                    /* Mozilla Firefox 4 to 18 */
-                    color: #999;
-                }
-                ::-moz-placeholder {
-                    /* Mozilla Firefox 19+ */
-                    color: #999;
-                }
-                :-ms-input-placeholder {
-                    /* Internet Explorer 10+ */
-                    color: #999;
                 }
             }
             button {
