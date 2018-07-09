@@ -16,46 +16,47 @@ def before_request():
     else:
         g.current_user=None 
 
-#登录请求
 @app.route('/c2c/login',methods=['POST','GET'])
 def login():
     if g.current_user:
         return redirect('/')
-    if request.method=="GET":
-        return app.send_satic_file('login.html')
-    else: 
-        email = request.form.get('email')
-        password = request.form.get('password')
+    else:
+        data = request.get_json()
+        if('email' not in data or 'password' not in data):
+            return jsonify({'success':False})
+        email = data['email']
+        password = data['password']
         user = User.usercheck(email,password)
         if user:
             session['user'] = user.user_id 
             return jsonify({'success':True})
         else:
             return jsonify({'success':False})
-
 #注册请求
 @app.route('/c2c/registe',methods=['POST','GET'])
 def registe():
     if g.current_user:
         return redirect('/')
-    if request.method=="GET":
-        return app.send_satic_file('registe.html')
     else:
         dic = request.get_json()
-        user = User(
-                nickname=dic['nickname'],
-                password=dic['password'],
-                email = dic['email'],
-                phone = dic['phone'],
-                role_id = dic['role_id'],
-                address = dic['address'],
-                name = dic['name'],
-                id_card = dic['id_card']
-                )
+        try:
+            user = User(
+                    nickname=dic['nickname'], 
+                    password=dic['password'],
+                    email = dic['email'],
+                    phone = dic['phone'],
+                    role_id = dic['role_id'],
+                    address = dic['address'],
+                    name = dic['name'],
+                    id_card = dic['id_card']
+                    )
+        except:
+            return jsonify({'success':False})
         if User.useradd(user):
             return jsonify({'success':True})
         else:
             return jsonify({'success':False})
+
 
 #登出请求
 @app.route('/c2c/logout',methods=['GET','POST'])
