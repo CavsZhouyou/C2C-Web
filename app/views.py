@@ -6,7 +6,7 @@ import re
 
 @app.route('/')
 def index():
-    return app.send_static_file("dist/index.html")
+    return jsonify({'success':True})
 
 @app.before_request
 def before_request():
