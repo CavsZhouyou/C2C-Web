@@ -6,7 +6,7 @@ import re
 
 @app.route('/')
 def index():
-    return app.send_static_file("src/views/HomePage.vue")
+    return app.send_static_file("dist/index.html")
 
 @app.before_request
 def before_request():
@@ -17,10 +17,9 @@ def before_request():
         g.current_user=None 
 
 #登录请求
-@app.route('/login',methods=['POST','GET'])
+@app.route('/c2c/login',methods=['POST','GET'])
 def login():
     if g.current_user:
-        flash("您已经登录")
         return redirect('/')
     if request.method=="GET":
         return app.send_satic_file('login.html')
@@ -35,10 +34,9 @@ def login():
             return jsonify({'success':False})
 
 #注册请求
-@app.route('/registe',methods=['POST','GET'])
+@app.route('/c2c/registe',methods=['POST','GET'])
 def registe():
     if g.current_user:
-        flash("您已经登录")
         return redirect('/')
     if request.method=="GET":
         return app.send_satic_file('registe.html')
@@ -60,14 +58,14 @@ def registe():
             return jsonify({'success':False})
 
 #登出请求
-@app.route('/logout',methods=['GET','POST'])
+@app.route('/c2c/logout',methods=['GET','POST'])
 def logout():
     session.pop('user',None)
     g.current_user=None 
     return redirect('/login')
 
 #用户信息获取接口
-@app.route('/userinfo',methods=['GET','POST'])
+@app.route('/c2c/userinfo',methods=['GET','POST'])
 def userinfo():
     if g.current_user:
         return g.current_user.to_json()
@@ -75,7 +73,7 @@ def userinfo():
         return jsonify({'success':False})
 
 #旅游信息分页获取，用例：{'index':1} 请求第一页
-@app.route('/travelmessage/list/',methods=['GET','POST'])
+@app.route('/c2c/travelmessage/list/',methods=['GET','POST'])
 def travelmessage():
     dic = request.get_json()
     if 'index' in dic:
@@ -93,7 +91,7 @@ def travelmessage():
         return jsonify({'success':False}) 
 
 #旅游信息页面请求
-@app.route('/travelmessage/<int:tm_id>',methods=['GET'])
+@app.route('/c2c/travelmessage/<int:tm_id>',methods=['GET'])
 def travelmessage_id(tm_id):
     tm = TravelMessage.query.get(tm.id)
     if tm:
@@ -102,7 +100,7 @@ def travelmessage_id(tm_id):
         return app.send_static_file('404.html')
 
 #旅游信息页面缓加载接口
-@app.route('/travelmessage/show/<int:tm_id>',methods=['GET'])
+@app.route('/c2c/travelmessage/show/<int:tm_id>',methods=['GET'])
 def travelmessage_id_info(tm_id):
     tm = TravelMessage.query.get(tm.id)
     if tm:
@@ -111,7 +109,7 @@ def travelmessage_id_info(tm_id):
         return jsonify({'success':False})
 
 #房源信息分页请求
-@app.route('/accommodation/list/', methods=['GET', 'POST'])
+@app.route('/c2c/accommodation/list/', methods=['GET', 'POST'])
 def accommodation():
     dic = request.get_json()
     if 'index' in dic:
@@ -127,7 +125,7 @@ def accommodation():
         return jsonify({'success': False})
 
 #对应房源信息的图片请求接口
-@app.route('/accommodation/image/<int:acc_id>',methods=['GET'])
+@app.route('/c2c/accommodation/image/<int:acc_id>',methods=['GET'])
 def accommodation_id_image(acc_id):
     images = AccommodationImage.query.filter(accImage_acc_id=acc_id).all()
     if images:
@@ -141,7 +139,7 @@ def accommodation_id_image(acc_id):
         return jsonify({'success': False})
 
 #对应单个房源信息展示页面请求
-@app.route('/accommodation/<int:acc_id>', methods=['GET'])
+@app.route('/c2c/accommodation/<int:acc_id>', methods=['GET'])
 def accommodation_id(acc_id):
     one_acc = Accommodation.query.get(acc_id)
     if one_acc:
@@ -150,7 +148,7 @@ def accommodation_id(acc_id):
         return app.send_static_file('404.html')
 
 #对应单个房源信息缓加载请求
-@app.route('/accommodation/show/<int:acc_id>', methods=['GET'])
+@app.route('/c2c/accommodation/show/<int:acc_id>', methods=['GET'])
 def accommodation_id_info(acc_id):
     one_acc = Accommodation.query.get(acc_id)
     if one_acc:
@@ -159,7 +157,7 @@ def accommodation_id_info(acc_id):
         return jsonify({'success': False})
 
 #房源信息添加接口
-@app.route('/accommodation/add',methods=['GET','POST'])
+@app.route('/c2c/accommodation/add',methods=['GET','POST'])
 def accommodation_add():
     data=request.get_json()
     oneAcc = Accommodation(
@@ -179,7 +177,7 @@ def accommodation_add():
         return jsonify({'success':False})
 
 #删除单个房源信息接口
-@app.route('/del_one_accommodation/<int:acc_id>')
+@app.route('/c2c/del_one_accommodation/<int:acc_id>')
 def del_one_accommodation(acc_id):
     if g.current_user.role_id != 2:
         return jsonify({'success':False})
@@ -196,7 +194,7 @@ def del_one_accommodation(acc_id):
 
 
 #出租者请求删除自己的房源信息
-@app.route('/accommodation/delete/<int:acc_id>',methods=['GET'])
+@app.route('/c2c/accommodation/delete/<int:acc_id>',methods=['GET'])
 def accommodation_delete(acc_id):
     #判断是否是出租者
     if g.current_user.role_id != 3:
@@ -221,7 +219,7 @@ def accommodation_delete(acc_id):
         return jsonify({'success': False})
 
 #房源信息更新
-@app.route('/accommodation/update/',methods=['GET','POST'])
+@app.route('/c2c/accommodation/update/',methods=['GET','POST'])
 def accommodation_update():
     # 判断是否是出租者
     if not g.current_user:
@@ -255,7 +253,7 @@ def accommodation_update():
 
 
 #添加图片
-@app.route('/accommodation/image/add',methods=['GET','POST'])
+@app.route('/c2c/accommodation/image/add',methods=['GET','POST'])
 def accommodation_image_add():
     data = request.get_json()
     image = AccommodationImage(accImage_acc_id = data['acc_id'], accImage_url = data['accImage_url'] )
@@ -267,7 +265,7 @@ def accommodation_image_add():
         return jsonify({'success':False})
 
 #删除图片
-@app.route('/accommodation/image/del/<int:accImage_id>',methods=['GET'])
+@app.route('/c2c/accommodation/image/del/<int:accImage_id>',methods=['GET'])
 def accommodation_image_del(accImage_id):
     image = AccommodationImage.query.get(accImage_id)
     try:
@@ -277,7 +275,7 @@ def accommodation_image_del(accImage_id):
     except Exception:
         return jsonify({'success':False})
 
-@app.route('/reservation/add',methods=['GET','POST'])
+@app.route('/c2c/reservation/add',methods=['GET','POST'])
 def reservation_add():
     data=request.get_json()
     oneRes = Reservation(
@@ -296,7 +294,7 @@ def reservation_add():
         return jsonify({'success':False})
 
 
-@app.route('/accommodation/browse/', methods=['GET', 'POST'])
+@app.route('/c2c/accommodation/browse/', methods=['GET', 'POST'])
 def browse():
     dic = request.get_json()
     if 'index' in dic:
@@ -312,7 +310,7 @@ def browse():
         return jsonify({'success': False})
 
 
-@app.route('/rolechange',methods=['POST'])
+@app.route('/c2c/rolechange',methods=['POST'])
 def role_change():
     if g.current_user:
         if g.current_user.role_id == 1:
