@@ -11,7 +11,6 @@ def index():
 @app.before_request
 def before_request():
     if 'user' in session:
-        print("has")
         g.current_user = User.query.filter_by(
                 user_id=session['user']).one()
     else:
@@ -20,11 +19,9 @@ def before_request():
 @app.route('/c2c/login',methods=['POST','GET'])
 def login():
     if g.current_user:
-        print("login")
         return redirect('/')
     else:
         data = request.get_json()
-        print(data)
         if(data==None or 'email' not in data or 'password' not in data):
             return jsonify({'success':False,
                             'error':"WrongDataFormat"})
@@ -45,7 +42,6 @@ def registe():
         return redirect('/')
     else:
         dic = request.get_json()
-        print(dic)
         try:
             user = User(
                     nickname=dic['nickname'], 
@@ -66,6 +62,46 @@ def registe():
                             'error':'DB add error'})
 
 
+#用户信息修改
+@app.route('/c2c/userupdate',methods=['POST','GET'])
+def userupdate():
+    if g.current_user:
+        try:
+            user = User.query.get(g.current_user.user_id)
+            data = request.get_json()
+            user.nickname = data['nickname']
+            user.phone = data['phone']
+            user.name = data['name']
+            user.id_card = data['id_card']
+            db.session.commit()
+            return jsonify({'success':True})
+        except Exception:
+            return jsonify({'success':False,
+                            'error':"Change Failed"})
+    else:
+        return jsonify({'success':False,
+                        'error':'Not Login'})
+#密码修改
+@app.route('/c2c/changepassword',methods=['POST','GET'])
+def userpasswordchange():
+    if g.current_user:
+        try:
+            user = User.query.get(g.current_user.user_id)
+            data = request.get_json()
+            if('password' in data and len(data['password'])>5 and len(data['password'])>20):
+                return jsonify({'success':False,
+                                'error':"Empty or Break  Length limit"})
+            user.password = data['password']
+            db.session.commit()
+            return jsonify({'success':True})
+        except Exception:
+            return jsonify({'success':False,
+                            'error':"Change Failed"})
+    else:
+        return jsonify({'success':False,
+                        'error':'Not Login'})
+
+
 #登出请求
 @app.route('/c2c/logout',methods=['GET','POST'])
 def logout():
@@ -80,7 +116,6 @@ def logout():
 @app.route('/c2c/userinfo',methods=['GET','POST'])
 def userinfo():
     if g.current_user:
-        print(g.current_user.to_json())
         return g.current_user.to_json()
     else:
         return jsonify({'success':False,
