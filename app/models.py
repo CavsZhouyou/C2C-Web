@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy 
 from datetime import datetime
 from flask import jsonify
+import re
 #初始化数据库变量
 db = SQLAlchemy()
 
@@ -14,20 +15,16 @@ class User(db.Model):
     phone = db.Column(db.String(50),nullable=False)
     registerdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
     role_id = db.Column(db.Integer,db.ForeignKey('role.role_id'))
-    address = db.Column(db.String(100),nullable=False)
+    address = db.Column(db.String(100),nullable=True)
     name = db.Column(db.String(100),nullable=False)
     id_card = db.Column(db.String(100),nullable=False)
-    #方便调用一个用户的所有订单
-    contracts_out = db.relationship('Contract',backref = 'con_tenant_id')
-    contracts_in = db.relationship('Contract',backref = 'con_lessor_id') 
 
-    def __init__(self,nickname,password,email,phone,role_id,address,name,id_card):
+    def __init__(self,nickname,password,email,phone,role_id,name,id_card):
         self.nickname = nickname 
         self.password = password 
         self.email = email 
         self.phone = phone 
         self.registerdate = datetime.now()
-        self.address = address 
         self.name = name 
         self.id_card = id_card 
         if(role_id!=3 and role_id!=4):
@@ -55,7 +52,7 @@ class User(db.Model):
         if not item[0]:
             return False 
         filters = {'email':email,'password':password}
-        user = User.query.filter(**filters).first()
+        user = User.query.filter_by(**filters).first()
         if user:
             return user 
         else: 
@@ -63,8 +60,7 @@ class User(db.Model):
     @staticmethod
     def useradd(user):
         #查重
-        filters = {'email':user.email}
-        finduser = User.query.filter(**filters).first()
+        finduser = User.query.filter_by(email = user.email).first()
         if finduser:
             return False 
         else:
@@ -81,7 +77,7 @@ class User(db.Model):
                 'nickname':self.nickname,
                 'email':self.email,
                 'phone':self.phone,
-                'address':self.acc_address,
+                'address':self.address,
                 'name':self.name,
                 'id_card':self.id_card
                 })
@@ -250,7 +246,6 @@ class Role(db.Model):
     __tablename__='role'
     role_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     role_name = db.Column(db.String(50),nullable=False)
-    users = db.relationship('User',backref = 'role_id')
 
     def to_json(self):
         return jsonify({

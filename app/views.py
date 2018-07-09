@@ -11,6 +11,7 @@ def index():
 @app.before_request
 def before_request():
     if 'user' in session:
+        print("has")
         g.current_user = User.query.filter_by(
                 user_id=session['user']).one()
     else:
@@ -19,26 +20,32 @@ def before_request():
 @app.route('/c2c/login',methods=['POST','GET'])
 def login():
     if g.current_user:
+        print("login")
         return redirect('/')
     else:
         data = request.get_json()
-        if('email' not in data or 'password' not in data):
-            return jsonify({'success':False})
+        print(data)
+        if(data==None or 'email' not in data or 'password' not in data):
+            return jsonify({'success':False,
+                            'error':"WrongDataFormat"})
         email = data['email']
         password = data['password']
         user = User.usercheck(email,password)
         if user:
             session['user'] = user.user_id 
-            return jsonify({'success':True})
+            return jsonify({'success':True,
+                            'user_id':user.user_id})
         else:
-            return jsonify({'success':False})
+            return jsonify({'success':False,
+                            'error':'WrongUsernameOrPassWord'})
 #注册请求
-@app.route('/c2c/registe',methods=['POST','GET'])
+@app.route('/c2c/regist',methods=['POST','GET'])
 def registe():
     if g.current_user:
         return redirect('/')
     else:
         dic = request.get_json()
+        print(dic)
         try:
             user = User(
                     nickname=dic['nickname'], 
@@ -46,32 +53,38 @@ def registe():
                     email = dic['email'],
                     phone = dic['phone'],
                     role_id = dic['role_id'],
-                    address = dic['address'],
                     name = dic['name'],
                     id_card = dic['id_card']
                     )
         except:
-            return jsonify({'success':False})
+            return jsonify({'success':False,
+                            'error':'WrongDataFormat'})
         if User.useradd(user):
             return jsonify({'success':True})
         else:
-            return jsonify({'success':False})
+            return jsonify({'success':False,
+                            'error':'DB add error'})
 
 
 #登出请求
 @app.route('/c2c/logout',methods=['GET','POST'])
 def logout():
-    session.pop('user',None)
-    g.current_user=None 
-    return redirect('/login')
+    try:
+        session.pop('user',None)
+        g.current_user=None
+        return jsonify({'success':True})
+    except Exception:
+        return jsonify({'success':False})
 
 #用户信息获取接口
 @app.route('/c2c/userinfo',methods=['GET','POST'])
 def userinfo():
     if g.current_user:
+        print(g.current_user.to_json())
         return g.current_user.to_json()
     else:
-        return jsonify({'success':False})
+        return jsonify({'success':False,
+                        'error':'Not login'})
 
 #旅游信息分页获取，用例：{'index':1} 请求第一页
 @app.route('/c2c/travelmessage/list/',methods=['GET','POST'])
@@ -328,3 +341,8 @@ def role_change():
                 return jsonify({'success':False})
     else:
         return jsonify({'success':False})
+
+@app.route('/c2c/city')
+def city_info():
+    city = City.query.get(1)
+    return jsonify({'name':city.city_name})
