@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy 
 from datetime import datetime
 from flask import jsonify
+import re
 #初始化数据库变量
 db = SQLAlchemy()
 
@@ -14,22 +15,21 @@ class User(db.Model):
     phone = db.Column(db.String(50),nullable=False)
     registerdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
     role_id = db.Column(db.Integer,db.ForeignKey('role.role_id'))
-    address = db.Column(db.String(100),nullable=False)
+    address = db.Column(db.String(100),nullable=True)
     name = db.Column(db.String(100),nullable=False)
     id_card = db.Column(db.String(100),nullable=False)
-    #方便调用一个用户的所有订单
-    contracts_out = db.relationship('Contract',backref = 'con_tenant_id')
-    contracts_in = db.relationship('Contract',backref = 'con_lessor_id') 
+    info = db.Column(db.Text,nullable=True)
+    headico = db.Column(db.String(100),nullable = True)
 
-    def __init__(self,nickname,password,email,phone,role_id,address,name,id_card):
+    def __init__(self,nickname,password,email,phone,role_id,name,id_card):
         self.nickname = nickname 
         self.password = password 
         self.email = email 
         self.phone = phone 
         self.registerdate = datetime.now()
-        self.address = address 
         self.name = name 
         self.id_card = id_card 
+        self.info = ""
         if(role_id!=3 and role_id!=4):
             self.role_id = 4
         else:
@@ -55,7 +55,7 @@ class User(db.Model):
         if not item[0]:
             return False 
         filters = {'email':email,'password':password}
-        user = User.query.filter(**filters).first()
+        user = User.query.filter_by(**filters).first()
         if user:
             return user 
         else: 
@@ -63,8 +63,7 @@ class User(db.Model):
     @staticmethod
     def useradd(user):
         #查重
-        filters = {'email':user.email}
-        finduser = User.query.filter(**filters).first()
+        finduser = User.query.filter_by(email = user.email).first()
         if finduser:
             return False 
         else:
@@ -77,13 +76,14 @@ class User(db.Model):
 
     def to_json(self):
         return jsonify({
-                'id':self.user_id,
+                'user_id':self.user_id,
                 'nickname':self.nickname,
                 'email':self.email,
                 'phone':self.phone,
-                'address':self.acc_address,
-                'name':self.name,
-                'id_card':self.id_card
+                'address':self.address,
+                'info':self.info,
+                'headico':self.headico,
+                'success':True
                 })
         
 
@@ -153,12 +153,14 @@ class Accommodation(db.Model):
     acc_address = db.Column(db.String(255))            #房源地址
     acc_capacity = db.Column(db.Integer)               #房源面积
     acc_price = db.Column(db.String(100))                  #房源价格
+    acc_datetype = db.Column(db.Integer,db.ForeignKey('datetype.type_id'))
     acc_city = db.Column(db.Integer,db.ForeignKey('city.city_id'))               #房源区域
     acc_description = db.Column(db.String(255))        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
+    acc_images = db.Column(db.Text,nullable=True)
     
-    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id):
+    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,datetype,images):
         self.acc_address = acc_address
         self.acc_capacity = acc_capacity
         self.acc_price = acc_price
@@ -166,6 +168,8 @@ class Accommodation(db.Model):
         self.acc_description = acc_description 
         self.acc_user_id = acc_user_id 
         self.acc_type_id = acc_type_id 
+        self.acc_datetype = datetype
+        self.acc_images = images 
 
     def to_json(self):
         return jsonify({
@@ -175,19 +179,10 @@ class Accommodation(db.Model):
             'acc_city':self.acc_city,
             'acc_description':self.acc_description,
             'acc_user_id':self.acc_user_id,
-            'acc_type_id':self.acc_type_id 
+            'acc_type_id':self.acc_type_id,
+            'acc_datetype':self.acc_datetype,
+            'acc_images':self.images
             })
-
-# 房源图片
-class AccommodationImage(db.Model):
-    __tablename__='accommodationimage'
-    accImage_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)    # 图片ID
-    accImage_acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id')) # 房源ID
-    accImage_url = db.Column(db.String(255))     # 图片url地址
-
-    def __init__(self,accImage_acc_id,accImage_url):
-        self.accImage_acc_id = accImage_acc_id 
-        self.accImage_url = accImage_url 
 
 
 
@@ -250,7 +245,6 @@ class Role(db.Model):
     __tablename__='role'
     role_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     role_name = db.Column(db.String(50),nullable=False)
-    users = db.relationship('User',backref = 'role_id')
 
     def to_json(self):
         return jsonify({
@@ -320,4 +314,23 @@ class Comment(db.Model):
             'content':self.content,
             'date':self.date
             })
+
+#房源信息计费时间单位
+class DateType(db.Model):
+    __tablename__ = 'datetype'
+    type_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    type_name = db.Column(db.String(20),nullable=False)
+
+#县级单位
+class County(db.Model):
+    __tablename__ = 'county'
+    county_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    county_name = db.Column(db.String(20),nullable=False)
+    city_id = db.Column(db.Integer,db.ForeignKey("city.city_id"))
+
+class Street(db.Model):
+    __tablename__ = 'street'
+    street_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    street_name = db.Column(db.String(50),nullable=False)
+    county_id = db.Column(db.Integer,db.ForeignKey("county.county_id"))
 
