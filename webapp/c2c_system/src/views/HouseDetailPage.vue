@@ -3,7 +3,7 @@
  * @Descriptions: 房屋详情页面 
  * @Date: 2018-07-05 21:58:39 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 14:16:39
+ * @Last Modified time: 2018-07-10 15:20:08
  */
 
 
@@ -11,14 +11,28 @@
     <div id="house-detail-page">
         <div class="header">
             <div class="container clearfix">
-                <div class="right-bar">
-                    <span v-if="isLogined">
-                        <a href="">个人中心</a>
+                <div class="left-bar">
+                    <span>
+                        <a href="">首页</a>
                     </span>
-                    <span v-if="!isLogined">
+                    <span>
+                        <a href="">社区</a>
+                    </span>
+                    <span>
+                        <a href="">帮助</a>
+                    </span>
+                </div>
+                <div class="right-bar">
+                    <span v-if="userId">
+                        <router-link to="/PersonalCenterPage">个人中心</router-link>
+                    </span>
+                    <span v-if="userId">
+                        <a href="" @click.prevent="logout()">退出</a>
+                    </span>
+                    <span v-if="!userId">
                         <a href="" @click.prevent="registToggle()">注册</a>
                     </span>
-                    <span v-if="!isLogined">
+                    <span v-if="!userId">
                         <a href="" @click.prevent="loginToggle()">登录</a>
                     </span>
                     <span>
@@ -64,7 +78,8 @@
                     </span>
                 </div>
                 <button class="order">
-                    <router-link to="/PersonalCenterPage/ReleaseOrderPage"> 马上预定</router-link>
+                    <a href="" @click.prevent="order()">马上预定</a>
+                    <!-- <router-link to="/PersonalCenterPage/ReleaseOrderPage"> 马上预定</router-link> -->
                 </button>
             </div>
             <div class="comment-box clearfix">
@@ -103,11 +118,66 @@
                 </div>
             </div>
         </div>
+        <transition name="fade">
+            <regist-box v-show="isRegistShow" v-on:callback="registToggle()"></regist-box>
+        </transition>
+        <transition name="fade">
+            <login-box v-show="isLoginShow" v-on:callback="loginToggle()"></login-box>
+        </transition>
     </div>
 </template>
 
 <script>
-const HouseDetailPage = {};
+import { mapGetters } from "vuex";
+import LoginBox from "../components/LoginBox";
+import RegistBox from "../components/RegistBox";
+
+const HouseDetailPage = {
+    data: function() {
+        return {
+            isRegistShow: false,
+            isLoginShow: false
+        };
+    },
+    components: {
+        LoginBox: LoginBox,
+        RegistBox: RegistBox
+    },
+    computed: {
+        ...mapGetters(["userId"])
+    },
+    methods: {
+        registToggle: function() {
+            this.isRegistShow = !this.isRegistShow;
+        },
+
+        loginToggle: function() {
+            this.isLoginShow = !this.isLoginShow;
+        },
+
+        logout: function() {
+            const self = this;
+
+            this.$axios.post("/c2c/logout").then(function(response) {
+                var data = response.data;
+
+                if (data.success) {
+                    // logout success
+                    self.$cookie.deleteAllCookies();
+                    self.$router.push("/");
+                }
+            });
+        },
+
+        order: function() {
+            if (!this.userId) {
+                this.$message.error("请先登录账号！");
+            } else {
+                this.$router.push("/PersonalCenterPage/ReleaseOrderPage");
+            }
+        }
+    }
+};
 
 export default HouseDetailPage;
 </script>

@@ -3,7 +3,7 @@
  * @Descriptions: 修改界面 
  * @Date: 2018-07-06 14:11:14 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 14:14:04
+ * @Last Modified time: 2018-07-10 10:46:55
  */
 
 
@@ -14,27 +14,66 @@
         </div>
         <div class="line input-box">
             <span>旧密码</span>
-            <el-input placeholder="请输入旧密码"></el-input>
+            <el-input type="password" v-model="oldPassword" placeholder="请输入旧密码"></el-input>
         </div>
         <div class="line input-box">
             <span>新密码</span>
-            <el-input placeholder="请输入新密码"></el-input>
+            <el-input type="password" v-model="newPassword" placeholder="请输入新密码"></el-input>
         </div>
         <div class="line input-box">
             <span>确认新密码</span>
-            <el-input placeholder="请再次输入密码"></el-input>
+            <el-input type="password" v-model="newPassword2" placeholder="请再次输入密码"></el-input>
         </div>
         <div class="button-container">
-            <button class="common-button">确认修改</button>
+            <button class="common-button" @click="commit()">确认修改</button>
         </div>
     </div>
 </template>
 
 
 <script>
+import { hex_md5 } from "../js/md5.js";
+
 const ChangePasswordPage = {
     data: function() {
-        return {};
+        return {
+            oldPassword: "",
+            newPassword: "",
+            newPassword2: ""
+        };
+    },
+    methods: {
+        commit: function() {
+            const self = this;
+
+            if (this.newPassword !== this.newPassword2) {
+                self.$message.error("两次输入的密码不一致！");
+                return;
+            }
+
+            var postData = {
+                old_password: hex_md5(this.oldPassword),
+                password: hex_md5(this.newPassword)
+            };
+
+            // update
+            this.$axios
+                .post("/c2c/changepassword", postData)
+                .then(function(response) {
+                    var data = response.data;
+
+                    if (data.success) {
+                        self.$message({
+                            message: "修改成功！",
+                            type: "success"
+                        });
+                        location.reload();
+                    } else {
+                        // update fail
+                        self.$message.error(data.error);
+                    }
+                });
+        }
     }
 };
 

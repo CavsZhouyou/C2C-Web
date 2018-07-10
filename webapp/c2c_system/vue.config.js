@@ -11,7 +11,12 @@ module.exports = {
         port: 9090,
         https: false,
         hotOnly: false,
-        proxy: null, // 设置代理
+        proxy: {
+            "/c2c/*": {
+                target: "http://10.236.194.228:5000",
+                secure: false
+            },
+        }, // 设置代理
         before: app => {}
     },
 }

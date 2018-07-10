@@ -3,7 +3,7 @@
  * @Descriptions: 发布预定订单页面 
  * @Date: 2018-07-06 12:57:17 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-06 14:02:07
+ * @Last Modified time: 2018-07-10 21:03:42
  */
 
 
@@ -48,6 +48,11 @@
             <span>成交价格</span>
             <el-input placeholder="请输入成交价格"></el-input>
         </div>
+        <div class="line">
+            <span>租房日期</span>
+            <el-date-picker v-model="value6" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
+        </div>
         <div class="line text-box">
             备注
             <br>
@@ -66,7 +71,8 @@ const ReleaseOrderPage = {
     data: function() {
         return {
             type: 0,
-            options: [{ value: 0, label: "公寓" }, { value: 1, label: "民宿" }]
+            options: [{ value: 0, label: "公寓" }, { value: 1, label: "民宿" }],
+            value6: ""
         };
     }
 };
@@ -87,18 +93,13 @@ export default ReleaseOrderPage;
 
         span {
             display: inline-block;
-            width: 100px;
-        }
-
-        .el-input {
-            margin-left: 20px;
+            width: 120px;
         }
     }
 
     .input-box {
         .el-input {
             width: 300px;
-            margin-left: 20px;
         }
 
         input {
@@ -110,7 +111,6 @@ export default ReleaseOrderPage;
     .text-box {
         .el-input {
             width: 300px;
-            margin-left: 20px;
         }
 
         textarea {

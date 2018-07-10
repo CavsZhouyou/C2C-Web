@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from './js/axios';
 import ElementUI from 'element-ui';
+import CookieUtils from './js/cookieUtil';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'vue2-animate/dist/vue2-animate.min.css';
 
@@ -13,6 +14,7 @@ Vue.use(ElementUI);
 
 // import utils
 Vue.prototype.$axios = axios;
+Vue.prototype.$cookie = CookieUtils;
 
 new Vue({
   router,
