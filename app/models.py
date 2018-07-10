@@ -19,6 +19,7 @@ class User(db.Model):
     name = db.Column(db.String(100),nullable=False)
     id_card = db.Column(db.String(100),nullable=False)
     info = db.Column(db.Text,nullable=True)
+    headico = db.Column(db.String(100),nullable = True)
 
     def __init__(self,nickname,password,email,phone,role_id,name,id_card):
         self.nickname = nickname 
@@ -81,6 +82,7 @@ class User(db.Model):
                 'phone':self.phone,
                 'address':self.address,
                 'info':self.info,
+                'headico':self.headico,
                 'success':True
                 })
         
@@ -156,8 +158,9 @@ class Accommodation(db.Model):
     acc_description = db.Column(db.String(255))        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
+    acc_images = db.Column(db.Text,nullable=True)
     
-    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,datetype):
+    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,datetype,images):
         self.acc_address = acc_address
         self.acc_capacity = acc_capacity
         self.acc_price = acc_price
@@ -166,6 +169,7 @@ class Accommodation(db.Model):
         self.acc_user_id = acc_user_id 
         self.acc_type_id = acc_type_id 
         self.acc_datetype = datetype
+        self.acc_images = images 
 
     def to_json(self):
         return jsonify({
@@ -176,19 +180,9 @@ class Accommodation(db.Model):
             'acc_description':self.acc_description,
             'acc_user_id':self.acc_user_id,
             'acc_type_id':self.acc_type_id,
-            'acc_datetype':self.acc_datetype 
+            'acc_datetype':self.acc_datetype,
+            'acc_images':self.images
             })
-
-# 房源图片
-class AccommodationImage(db.Model):
-    __tablename__='accommodationimage'
-    accImage_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)    # 图片ID
-    accImage_acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id')) # 房源ID
-    accImage_url = db.Column(db.String(255))     # 图片url地址
-
-    def __init__(self,accImage_acc_id,accImage_url):
-        self.accImage_acc_id = accImage_acc_id 
-        self.accImage_url = accImage_url 
 
 
 
@@ -340,11 +334,3 @@ class Street(db.Model):
     street_name = db.Column(db.String(50),nullable=False)
     county_id = db.Column(db.Integer,db.ForeignKey("county.county_id"))
 
-#用户头像
-class UserHeadIco(db.Model):
-    __tablename__="userheadico"
-    headico_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
-    headico_name = db.Column(db.String(100),nullable=False)
-    user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))
-
-    

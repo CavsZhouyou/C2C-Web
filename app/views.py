@@ -229,14 +229,11 @@ def accommodation_add():
         acc_description = data['acc_description'],
         acc_user_id = data['acc_user_id'],
         acc_type_id = data['acc_type_id'],
-        acc_datetype = date['acc_datetype']
+        acc_datetype = date['acc_datetype'],
+        acc_images = data['acc_images']
     )
     try:
         db.session.add(oneAcc)
-        db.session.commit()
-        for url in data['images']:
-            img = AccommodationImage(oneAcc.accImage_acc_id,url)
-            db.session.add(img)
         db.session.commit()
 
         return jsonify({'success':True})
@@ -294,6 +291,7 @@ def accommodation_update():
         oneAcc.acc_user_id = data['acc_user_id']
         oneAcc.acc_type_id = data['acc_type_id']
         oneAcc.acc_city = data['acc_city']
+        oneAcc.acc_images = data['acc_images']
         try:
             db.session.commit()
         except Exception:
@@ -302,32 +300,6 @@ def accommodation_update():
         return jsonify({'success': False})    
 
 
-#添加图片
-@app.route('/c2c/accommodation/image/add',methods=['GET','POST'])
-def accommodation_image_add():
-    data = request.get_json()
-    if("acc_id" not in data or 'acc_image_url' not in data):
-        return jsonify({'success':False,
-                        'error':'Loss Key'})
-
-    image = AccommodationImage(accImage_acc_id = data['acc_id'], accImage_url = data['accImage_url'] )
-    try:
-        db.session.add(image)
-        db.session.commit()
-        return jsonify({'success':True})
-    except Exception:
-        return jsonify({'success':False})
-
-#删除图片
-@app.route('/c2c/accommodation/image/del/<int:accImage_id>',methods=['GET'])
-def accommodation_image_del(accImage_id):
-    image = AccommodationImage.query.get(accImage_id)
-    try:
-        db.session.delete(image)
-        db.session.commit()
-        return jsonify({'success':True})
-    except Exception:
-        return jsonify({'success':False})
 
 @app.route('/c2c/reservation/add',methods=['GET','POST'])
 def reservation_add():
@@ -390,9 +362,9 @@ def city_info():
 
 @app.route('/c2c/upload',methods=['POST','GET'])
 def upload():
-    #if not g.current_user:
-    #    return jsonify({'success':False,
-    #                    'error':'Not login'})
+    if not g.current_user:
+        return jsonify({'success':False,
+                        'error':'Not login'})
     key = datetime.now().strftime("%Y-%m-%d%H%M%S")+".png"
     token = qiniu_handle.upload_token(bucket_name,key,3600,policy)
     return jsonify({'success':True,
@@ -406,8 +378,13 @@ def headico_upload():
     if not g.current_user:
         return jsonify({'success':False,
                         'error':'Not login'})
-        #TO-DO
-   
-@app.route('/c2c/uploadcallback',methods = ['POST','GET'])
-def uploadcallback():
-    pass
+    if 'headico' not in data:
+        return jsonify({'success':False, 'error':'No key value'}) 
+    try:    
+        user = User.query.get(g.current_user.user_id)
+        user.headico = data['headico']
+        db.session.commit()
+        return jsonify({'success':True})
+    except:
+        return jsonify({'success':False,
+                        'error':"DB Error"})
