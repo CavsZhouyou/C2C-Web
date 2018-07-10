@@ -4,3 +4,4 @@ flask-mysqldb
 flask-migrate
 flask-script
 flask-login
+flask-qiniustorage

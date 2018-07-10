@@ -67,7 +67,7 @@ class UserTestCase(unittest.TestCase):
             print("userupdate return ",data,"\n")
             assert data['success']
 
-    def test_passwordchange(self):
+    def test_e_passwordchange(self):
         with app.test_request_context("/c2c/userinfo"):
             self.app.post('/c2c/login',json={
             'email':"333@qq.com",
@@ -75,7 +75,7 @@ class UserTestCase(unittest.TestCase):
 
             app.preprocess_request()
             rv = self.app.post('/c2c/changepassword',json={
-                                'password':"1234566"})
+                                'password':"password"})
             data = rv.get_json()
             print("password change return ",data,"\n")
             assert data['success']
@@ -108,7 +108,7 @@ class PublishAccommodation(unittest.TestCase):
         else:
             return False 
 
-    def test_publish(self):
+    def test_a_publish(self):
         with app.test_request_context("/c2c/userinfo"):
             user_id = self.login()
             app.preprocess_request()
@@ -127,6 +127,32 @@ class PublishAccommodation(unittest.TestCase):
                 assert data['success']
             else:
                 return False 
+
+    def test_b_list(self):
+        rv = self.app.post('/c2c/accommodation/list',json={
+            'index':1})
+        data = rv.get_json()
+        print("Accommodation list return ",data,'\n')
+        assert 'success' not in data 
+
+    def test_c_show(self):
+        rv = self.app.get('/c2c/accommodation/show/1')
+        data = rv.get_json()
+        print("Accommodation show ",data,"\n")
+        assert 'success' not in data 
+
+    def test_d_del(self):
+        with app.test_request_context("/c2c/del_one_accommodation/1"):
+            user_id = self.login()
+            app.preprocess_request()
+            if(user_id):
+                rv = self.app.post('/c2c/del_one_accommodation/1')
+                data = rv.get_json()
+                print("accommodation return ",data,"\n")
+                assert data['success']
+            else:
+                return False 
+
 
 
 if __name__=='__main__':

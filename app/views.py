@@ -1,5 +1,6 @@
-from app import app 
-from flask import request,flash,redirect,session,g,jsonify
+from app import app,qiniu_handle,bucket_name,policy,bucket_domain
+from datetime import datetime
+from flask import request,flash,redirect,session,g,jsonify 
 from .models import *
 import json 
 import re 
@@ -19,7 +20,8 @@ def before_request():
 @app.route('/c2c/login',methods=['POST','GET'])
 def login():
     if g.current_user:
-        return redirect('/')
+        return jsonify({'success':False,
+                     'error':"Alreadylogin"})
     else:
         data = request.get_json()
         if(data==None or 'email' not in data or 'password' not in data):
@@ -31,7 +33,8 @@ def login():
         if user:
             session['user'] = user.user_id 
             return jsonify({'success':True,
-                            'user_id':user.user_id})
+                            'user_id':user.user_id,
+                            'role_id':user.role_id})
         else:
             return jsonify({'success':False,
                             'error':'WrongUsernameOrPassWord'})
@@ -71,8 +74,7 @@ def userupdate():
             data = request.get_json()
             user.nickname = data['nickname']
             user.phone = data['phone']
-            user.name = data['name']
-            user.id_card = data['id_card']
+            user.info = data['info']
             db.session.commit()
             return jsonify({'success':True})
         except Exception:
@@ -88,13 +90,17 @@ def userpasswordchange():
         try:
             user = User.query.get(g.current_user.user_id)
             data = request.get_json()
-            if('password' in data and len(data['password'])>5 and len(data['password'])>20):
+            if(('password' in data) and ('old_password' in data) and len(data['password'])<5 and len(data['password'])>20):
                 return jsonify({'success':False,
                                 'error':"Empty or Break  Length limit"})
+            if(data['old_password']!= user.password):
+                return jsonify({'success':False,
+                                'error':"原始密码错误"})   
             user.password = data['password']
             db.session.commit()
             return jsonify({'success':True})
-        except Exception:
+        except Exception as e:
+            print(e)
             return jsonify({'success':False,
                             'error':"Change Failed"})
     else:
@@ -160,16 +166,21 @@ def travelmessage_id_info(tm_id):
 #房源信息分页请求
 @app.route('/c2c/accommodation/list/', methods=['GET', 'POST'])
 def accommodation():
+    print("hello")
     dic = request.get_json()
     if 'index' in dic:
         index = dic['index']
         return_dic = {}
         if isinstance(index, int) and index > 0:
             index = index * 10
-            accommodations = Accommodation.query.all()[index - 10:index - 1]
-            for one_acc in accommodations:
-                return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_city, one_acc.acc_price}
-            return jsonify(return_dic)
+            try:
+                accommodations = Accommodation.query.all()[index - 10:index - 1]
+                for one_acc in accommodations:
+                    return_dic[one_acc.acc_id] = {one_acc.acc_description, one_acc.acc_city, one_acc.acc_price}
+                return jsonify(return_dic)
+            except Exception:
+                return jsonify({'success':False,
+                                'error':'DB query Failed'})
     else:
         return jsonify({'success': False})
 
@@ -203,7 +214,8 @@ def accommodation_id_info(acc_id):
     if one_acc:
         return one_acc.to_json()
     else:
-        return jsonify({'success': False})
+        return jsonify({'success': False,
+                        'error':'DB query Failed'})
 
 #房源信息添加接口
 @app.route('/c2c/accommodation/add',methods=['GET','POST'])
@@ -217,55 +229,44 @@ def accommodation_add():
         acc_description = data['acc_description'],
         acc_user_id = data['acc_user_id'],
         acc_type_id = data['acc_type_id'],
+        acc_datetype = date['acc_datetype']
     )
     try:
         db.session.add(oneAcc)
         db.session.commit()
+        for url in data['images']:
+            img = AccommodationImage(oneAcc.accImage_acc_id,url)
+            db.session.add(img)
+        db.session.commit()
+
         return jsonify({'success':True})
     except Exception:
         return jsonify({'success':False})
 
 #删除单个房源信息接口
-@app.route('/c2c/del_one_accommodation/<int:acc_id>')
+@app.route('/c2c/del_one_accommodation/<int:acc_id>',methods=['POST','GET'])
 def del_one_accommodation(acc_id):
-    if g.current_user.role_id != 2:
-        return jsonify({'success':False})
     oneAcc = Accommodation.query.get(acc_id)
+    if(not oneAcc):
+        return jsonify({'success':False,
+                        'error':'DB query Failed'})
+
+    if (g.current_user.role_id != 2 and oneAcc.acc_user_id != g.current_user.user_id):
+        return jsonify({'success':False,
+                        'error':'Role Failed'})
     if oneAcc:
         try:
             db.session.delete(oneAcc)
             db.session.commit()
             return jsonify({'success':True})
         except Exception:
-            return jsonify({'success':False})
+            return jsonify({'success':False,
+                            'error':'DB remove Failed'})
     else:
-        return jsonify({'success':False})
+        return jsonify({'success':False,
+                        'error':'DB query Failed'})
 
 
-#出租者请求删除自己的房源信息
-@app.route('/c2c/accommodation/delete/<int:acc_id>',methods=['GET'])
-def accommodation_delete(acc_id):
-    #判断是否是出租者
-    if g.current_user.role_id != 3:
-        return jsonify({'success': False})
-    #判断是否是出租者拥有的房源
-    oneAcc=Accommodation.query.get(acc_id)
-    if oneAcc:
-        if oneAcc.acc_user_id != g.current_user.user_id:
-            jsonify({'success': False})
-    else:
-        return jsonify({'success': False})
-
-    #删除房源
-    if oneAcc:
-        try:
-            db.session.delete(oneAcc)
-            db.session.commit()
-            return jsonify({'success': True})
-        except Exception:
-            return jsonify({'success': False})
-    else:
-        return jsonify({'success': False})
 
 #房源信息更新
 @app.route('/c2c/accommodation/update/',methods=['GET','POST'])
@@ -305,6 +306,10 @@ def accommodation_update():
 @app.route('/c2c/accommodation/image/add',methods=['GET','POST'])
 def accommodation_image_add():
     data = request.get_json()
+    if("acc_id" not in data or 'acc_image_url' not in data):
+        return jsonify({'success':False,
+                        'error':'Loss Key'})
+
     image = AccommodationImage(accImage_acc_id = data['acc_id'], accImage_url = data['accImage_url'] )
     try:
         db.session.add(image)
@@ -377,7 +382,32 @@ def role_change():
     else:
         return jsonify({'success':False})
 
-@app.route('/c2c/city')
+
+@app.route('/c2c/city',methods=['POST','GET'])
 def city_info():
     city = City.query.get(1)
     return jsonify({'name':city.city_name})
+
+@app.route('/c2c/upload',methods=['POST','GET'])
+def upload():
+    #if not g.current_user:
+    #    return jsonify({'success':False,
+    #                    'error':'Not login'})
+    key = datetime.now().strftime("%Y-%m-%d%H%M%S")+".png"
+    token = qiniu_handle.upload_token(bucket_name,key,3600,policy)
+    return jsonify({'success':True,
+                    'key':key,
+                    'domain':bucket_domain,
+                    'token':token})
+
+@app.route('/c2c/headico',methods=['POST','GET'])
+def headico_upload():
+    data = request.get_json()
+    if not g.current_user:
+        return jsonify({'success':False,
+                        'error':'Not login'})
+        #TO-DO
+   
+@app.route('/c2c/uploadcallback',methods = ['POST','GET'])
+def uploadcallback():
+    pass

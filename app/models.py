@@ -18,6 +18,7 @@ class User(db.Model):
     address = db.Column(db.String(100),nullable=True)
     name = db.Column(db.String(100),nullable=False)
     id_card = db.Column(db.String(100),nullable=False)
+    info = db.Column(db.Text,nullable=True)
 
     def __init__(self,nickname,password,email,phone,role_id,name,id_card):
         self.nickname = nickname 
@@ -27,6 +28,7 @@ class User(db.Model):
         self.registerdate = datetime.now()
         self.name = name 
         self.id_card = id_card 
+        self.info = ""
         if(role_id!=3 and role_id!=4):
             self.role_id = 4
         else:
@@ -73,13 +75,13 @@ class User(db.Model):
 
     def to_json(self):
         return jsonify({
-                'id':self.user_id,
+                'user_id':self.user_id,
                 'nickname':self.nickname,
                 'email':self.email,
                 'phone':self.phone,
                 'address':self.address,
-                'name':self.name,
-                'id_card':self.id_card
+                'info':self.info,
+                'success':True
                 })
         
 
@@ -149,12 +151,13 @@ class Accommodation(db.Model):
     acc_address = db.Column(db.String(255))            #房源地址
     acc_capacity = db.Column(db.Integer)               #房源面积
     acc_price = db.Column(db.String(100))                  #房源价格
+    acc_datetype = db.Column(db.Integer,db.ForeignKey('datetype.type_id'))
     acc_city = db.Column(db.Integer,db.ForeignKey('city.city_id'))               #房源区域
     acc_description = db.Column(db.String(255))        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
     
-    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id):
+    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,datetype):
         self.acc_address = acc_address
         self.acc_capacity = acc_capacity
         self.acc_price = acc_price
@@ -162,6 +165,7 @@ class Accommodation(db.Model):
         self.acc_description = acc_description 
         self.acc_user_id = acc_user_id 
         self.acc_type_id = acc_type_id 
+        self.acc_datetype = datetype
 
     def to_json(self):
         return jsonify({
@@ -171,7 +175,8 @@ class Accommodation(db.Model):
             'acc_city':self.acc_city,
             'acc_description':self.acc_description,
             'acc_user_id':self.acc_user_id,
-            'acc_type_id':self.acc_type_id 
+            'acc_type_id':self.acc_type_id,
+            'acc_datetype':self.acc_datetype 
             })
 
 # 房源图片
@@ -316,3 +321,30 @@ class Comment(db.Model):
             'date':self.date
             })
 
+#房源信息计费时间单位
+class DateType(db.Model):
+    __tablename__ = 'datetype'
+    type_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    type_name = db.Column(db.String(20),nullable=False)
+
+#县级单位
+class County(db.Model):
+    __tablename__ = 'county'
+    county_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    county_name = db.Column(db.String(20),nullable=False)
+    city_id = db.Column(db.Integer,db.ForeignKey("city.city_id"))
+
+class Street(db.Model):
+    __tablename__ = 'street'
+    street_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    street_name = db.Column(db.String(50),nullable=False)
+    county_id = db.Column(db.Integer,db.ForeignKey("county.county_id"))
+
+#用户头像
+class UserHeadIco(db.Model):
+    __tablename__="userheadico"
+    headico_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
+    headico_name = db.Column(db.String(100),nullable=False)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))
+
+    
