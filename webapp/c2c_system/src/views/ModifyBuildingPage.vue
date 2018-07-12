@@ -1,20 +1,19 @@
 /*
  * @Author: zhouyou@werun 
- * @Descriptions: 发布房源信息 
- * @Date: 2018-07-06 12:57:17 
+ * @Descriptions: 修改房源信息 
+ * @Date: 2018-07-11 17:08:36 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-12 11:30:35
+ * @Last Modified time: 2018-07-12 11:43:30
  */
 
-
 <template>
-    <div id="release-building-page">
+    <div id="modify-building-page">
         <div class="line">
-            <h2>房源信息发布</h2>
+            <h2>房源信息修改</h2>
         </div>
         <div class="line">
             房源类型
-            <el-select v-model="defaultData.acc_type_id" placeholder="请选择房源类型">
+            <el-select v-model="defaultData.acc_type" placeholder="请选择房源类型">
                 <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
@@ -69,7 +68,7 @@
             </div>
         </div>
         <div class="button-container">
-            <button class="common-button" @click="commit()">发布房源信息</button>
+            <button class="common-button" @click="commit()">修改房源信息</button>
         </div>
     </div>
 </template>
@@ -79,7 +78,7 @@
 import * as qiniu from "qiniu-js";
 import { mapGetters } from "vuex";
 
-const ReleaseBuildingPage = {
+const ModifyBuildingPage = {
     data: function() {
         return {
             type: "",
@@ -90,7 +89,7 @@ const ReleaseBuildingPage = {
                 { value: 4, label: "酒店" },
                 { value: 5, label: "独栋别墅" }
             ],
-            unit: "",
+            unit: 1,
             unitOptions: [{ value: 1, label: "日" }],
             city: "",
             cityOptions: [],
@@ -99,6 +98,7 @@ const ReleaseBuildingPage = {
             street: "",
             streetOptions: [],
             pictureUrls: [],
+
             defaultData: {
                 acc_type_id: "",
                 acc_capacity: "",
@@ -149,16 +149,17 @@ const ReleaseBuildingPage = {
             var postData = this.defaultData;
 
             postData.acc_images = this.pictureUrls.join(" ");
+            postData.acc_type_id = postData.acc_type;
 
             // update
             this.$axios
-                .post("/c2c/accommodation/add", postData)
+                .post("/c2c/accommodation/update", postData)
                 .then(function(response) {
                     var data = response.data;
 
                     if (data.success) {
                         self.$message({
-                            message: "发布成功！",
+                            message: "修改成功！",
                             type: "success"
                         });
                         self.$router.push(
@@ -167,7 +168,7 @@ const ReleaseBuildingPage = {
                         // location.reload();
                     } else {
                         // update fail
-                        self.$message.error("发布失败");
+                        self.$message.error("修改失败");
                     }
                 });
         },
@@ -212,20 +213,42 @@ const ReleaseBuildingPage = {
                     self.streetOptions = data.streets;
                 }
             });
+        },
+
+        getBuildingInformation: function() {
+            const self = this;
+
+            var postData = {
+                acc_id: this.$route.params.buildingId
+            };
+
+            this.$axios
+                .post("/c2c/accommodation/show", postData)
+                .then(function(response) {
+                    var data = response.data;
+
+                    if (data.success) {
+                        self.defaultData = data;
+                        self.pictureUrls = data.acc_images;
+                        self.getCounty();
+                        self.getStreet();
+                    }
+                });
         }
     },
 
     created() {
         this.getCity();
+        this.getBuildingInformation();
     }
 };
 
-export default ReleaseBuildingPage;
+export default ModifyBuildingPage;
 </script>
 
 
 <style lang="scss">
-#release-building-page {
+#modify-building-page {
     padding: 30px;
     text-align: left;
     margin-bottom: 50px;

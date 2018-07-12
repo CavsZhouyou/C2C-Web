@@ -3,7 +3,7 @@
  * @Descriptions: 用户注册界面 
  * @Date: 2018-07-09 09:57:02 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-09 11:43:31
+ * @Last Modified time: 2018-07-11 17:04:26
  */
 
 
@@ -66,11 +66,11 @@ const RegistBox = {
         return {
             roles: [
                 {
-                    value: "3",
+                    value: 3,
                     label: "出租用户"
                 },
                 {
-                    value: "4",
+                    value: 4,
                     label: "租房用户"
                 }
             ],

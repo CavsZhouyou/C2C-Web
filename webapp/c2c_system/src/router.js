@@ -16,6 +16,7 @@ import ReleaseBuildingPage from './views/ReleaseBuildingPage'
 import ReleaseOrderPage from './views/ReleaseOrderPage'
 import PersonalDataPage from './views/PersonalDataPage'
 import ChangePasswordPage from './views/ChangePasswordPage'
+import ModifyBuildingPage from './views/ModifyBuildingPage'
 
 Vue.use(Router)
 
@@ -29,7 +30,7 @@ export default new Router({
     name: "HouseListPage",
     component: HouseListPage
   }, {
-    path: '/HouseDetailPage',
+    path: '/HouseDetailPage/:buildingId',
     name: "HouseDetailPage",
     component: HouseDetailPage
   }, {
@@ -76,12 +77,17 @@ export default new Router({
         component: ViewBuildingPage,
       },
       {
+        path: 'ModifyBuildingPage/:buildingId',
+        name: "ModifyBuildingPage",
+        component: ModifyBuildingPage,
+      },
+      {
         path: 'ReleaseBuildingPage',
         name: "ReleaseBuildingPage",
         component: ReleaseBuildingPage,
       },
       {
-        path: 'ReleaseOrderPage',
+        path: 'ReleaseOrderPage/:buildingId',
         name: "ReleaseOrderPage",
         component: ReleaseOrderPage,
       },

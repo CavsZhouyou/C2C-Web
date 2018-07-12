@@ -3,7 +3,7 @@
  * @Descriptions: 用户登录界面 
  * @Date: 2018-07-09 09:57:25 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-10 19:19:00
+ * @Last Modified time: 2018-07-11 16:46:01
  */
 
 
@@ -43,7 +43,12 @@ const LoginBox = {
         };
     },
     methods: {
-        ...mapActions(["updateUserId"]),
+        ...mapActions([
+            "updateUserId",
+            "updateRoleId",
+            "updateHeadImg",
+            "updateNickName"
+        ]),
         login: function() {
             const self = this;
 
@@ -67,12 +72,21 @@ const LoginBox = {
                 if (data.success) {
                     // login success
                     self.$cookie.setCookie("c2c_user_id", data.user_id);
+                    self.$cookie.setCookie("c2c_role_id", data.role_id);
+                    self.$cookie.setCookie("c2c_nick_name", data.nickname);
+
+                    if (data.headico) {
+                        self.updateHeadImg(data.headico);
+                    }
+
                     self.$message({
                         message: "登录成功！",
                         type: "success"
                     });
                     self.$emit("callback");
                     self.updateUserId();
+                    self.updateRoleId();
+                    self.updateNickName(data.nickname);
                 } else {
                     // login fail
                     self.$message.error("登录失败");

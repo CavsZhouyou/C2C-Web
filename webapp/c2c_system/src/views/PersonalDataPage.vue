@@ -3,14 +3,21 @@
  * @Descriptions: 个人资料页面 
  * @Date: 2018-07-06 14:03:28 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-10 10:32:22
+ * @Last Modified time: 2018-07-11 15:46:25
  */
 
 
 <template>
     <div id="personal-data-page">
+
         <div class="line">
             <h2>个人资料</h2>
+        </div>
+        <div class="line head-img">
+            <span>用户头像</span>
+            <img :src="defaultData.headico">
+            <button class="common-button">上传头像</button>
+            <input type="file" required accept="image/png, image/jpeg, image/gif, image/jpg" id="photoUploadBtn" @change="uploadPhoto">
         </div>
         <div class="line input-box">
             <span>用户名</span>
@@ -24,10 +31,10 @@
             <span>手机号</span>
             <el-input v-model="defaultData.phone" placeholder="请输入手机号"></el-input>
         </div>
-        <div class="line input-box">
+        <!-- <div class="line input-box">
             <span>居住地址</span>
             <el-input placeholder="请输入居住地址"></el-input>
-        </div>
+        </div> -->
         <div class="line text-box">
             个人介绍
             <br>
@@ -43,6 +50,10 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import * as qiniu from "qiniu-js";
+
+const defaultHeadImg = require("../assets/head-img.jpg");
 
 const PersonalDataPage = {
     data: function() {
@@ -51,6 +62,7 @@ const PersonalDataPage = {
             options: [{ value: 0, label: "公寓" }, { value: 1, label: "民宿" }],
 
             defaultData: {
+                headico: defaultHeadImg,
                 address: null,
                 email: "",
                 id_card: "",
@@ -66,6 +78,33 @@ const PersonalDataPage = {
         ...mapGetters["userId"]
     },
     methods: {
+        ...mapActions(["updateHeadImg"]),
+
+        uploadPhoto: function(event) {
+            const self = this;
+            this.$axios.post("/c2c/upload").then(function(response) {
+                var data = response.data;
+                if (data.success) {
+                    var observable = qiniu.upload(
+                        event.target.files[0],
+                        data.key,
+                        data.token
+                    );
+
+                    var observer = {
+                        next(res) {},
+                        error(err) {},
+                        complete(res) {
+                            var photoUrl =
+                                "http://" + data.domain + "/" + res.key;
+                            self.defaultData.headico = photoUrl;
+                        }
+                    };
+
+                    var subscription = observable.subscribe(observer); // 上传开始
+                }
+            });
+        },
         getPersonalInformation: function() {
             const self = this;
 
@@ -75,6 +114,10 @@ const PersonalDataPage = {
 
                 if (data.success) {
                     self.defaultData = data;
+
+                    if (!data.headico) {
+                        self.defaultData.headico = defaultHeadImg;
+                    }
                 } else {
                     // get fail
                     self.$message.error("获取失败");
@@ -97,6 +140,7 @@ const PersonalDataPage = {
                             message: "更新成功！",
                             type: "success"
                         });
+                        self.updateHeadImg(self.defaultData.headico);
                     } else {
                         // update fail
                         self.$message.error("提交失败");
@@ -130,6 +174,32 @@ export default PersonalDataPage;
 
         .el-input {
             margin-left: 20px;
+        }
+    }
+
+    .head-img {
+        img {
+            margin-left: 20px;
+            margin-right: 20px;
+            width: 100px;
+            height: 100px;
+            vertical-align: middle;
+        }
+
+        .common-button {
+            width: 100px;
+            height: 30px;
+            border-radius: 10px;
+            vertical-align: bottom;
+        }
+
+        #photoUploadBtn {
+            position: absolute;
+            margin-top: 71px;
+            margin-left: -100px;
+            width: 100px;
+            height: 30px;
+            opacity: 0;
         }
     }
 

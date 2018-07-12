@@ -3,7 +3,7 @@
  * @Descriptions: 个人中心页面 
  * @Date: 2018-07-06 08:29:15 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-10 20:54:58
+ * @Last Modified time: 2018-07-11 15:32:52
  */
 
 
@@ -24,8 +24,8 @@
                         </span>
                     </div>
                     <div class="right-bar">
-                        <img src="../assets/19.jpg" alt="" class="head-img">
-                        <span class="name">Lakers</span>
+                        <img :src="headImg" alt="" class="head-img">
+                        <span class="name">{{nickName}}</span>
                         <span>
                             <a href="" @click.prevent="logout()">退出</a>
                         </span>
@@ -43,34 +43,34 @@
             </div>
             <div class="sidebar">
                 <ul>
-                    <li :class="{clicked: index === 1}" @click="addClass(1)">
+                    <li v-if="roleId==1" :class="{clicked: index === 1}" @click="addClass(1)">
                         <router-link to="/PersonalCenterPage/UserManagePage">用户管理</router-link>
                     </li>
-                    <li :class="{clicked: index === 2}" @click="addClass(2)">
+                    <li v-if="roleId==2" :class="{clicked: index === 2}" @click="addClass(2)">
                         <router-link to="/PersonalCenterPage/ReleaseDisclaimerPage">发布免责声明</router-link>
                     </li>
-                    <li :class="{clicked: index === 3}" @click="addClass(3)">
+                    <li v-if="roleId==2" :class="{clicked: index === 3}" @click="addClass(3)">
                         <router-link to="/PersonalCenterPage/ReleaseTravelInformationPage">发布旅游信息</router-link>
                     </li>
-                    <li :class="{clicked: index === 4}" @click="addClass(4)">
+                    <li v-if="roleId==2" :class="{clicked: index === 4}" @click="addClass(4)">
                         <router-link to="/PersonalCenterPage/ReleaseBuildingRecommendPage">发布住宿推荐信息</router-link>
                     </li>
-                    <li :class="{clicked: index === 5}" @click="addClass(5)">
+                    <li v-if="roleId==2" :class="{clicked: index === 5}" @click="addClass(5)">
                         <router-link to="/PersonalCenterPage/ViewReserveOrderPage">查看预订单</router-link>
                     </li>
-                    <li :class="{clicked: index === 6}" @click="addClass(6)">
+                    <li v-if="roleId==3" :class="{clicked: index === 6}" @click="addClass(6)">
                         <router-link to="/PersonalCenterPage/ReleaseBuildingPage">发布房源信息</router-link>
                     </li>
-                    <li :class="{clicked: index === 7}" @click="addClass(7)">
+                    <li v-if="roleId==3" :class="{clicked: index === 7}" @click="addClass(7)">
                         <router-link to="/PersonalCenterPage/ViewBuildingPage">查看已发布房源</router-link>
                     </li>
-                    <li :class="{clicked: index === 8}" @click="addClass(8)">
+                    <li v-if="roleId==3" :class="{clicked: index === 8}" @click="addClass(8)">
                         <router-link to="/PersonalCenterPage/ViewBuildingOrdersPage">查看房源订单</router-link>
                     </li>
-                    <li :class="{clicked: index === 9}" @click="addClass(9)">
+                    <li v-if="roleId==100" :class="{clicked: index === 9}" @click="addClass(9)">
                         <router-link to="/PersonalCenterPage/ReleaseOrderPage">发布预定订单</router-link>
                     </li>
-                    <li :class="{clicked: index === 10}" @click="addClass(10)">
+                    <li v-if="roleId==4" :class="{clicked: index === 10}" @click="addClass(10)">
                         <router-link to="/PersonalCenterPage/ViewAllOrdersPage">查看所有订单</router-link>
                     </li>
                     <li :class="{clicked: index === 11}" @click="addClass(11)">
@@ -87,13 +87,21 @@
 
 
 <script>
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
+
 const PersonalCenterPage = {
     data: function() {
         return {
             index: 0
         };
     },
+    computed: {
+        ...mapGetters(["roleId", "headImg", "nickName"])
+    },
     methods: {
+        ...mapActions(["updateUserId"]),
+
         logout: function() {
             const self = this;
 
@@ -103,7 +111,9 @@ const PersonalCenterPage = {
                 if (data.success) {
                     // logout success
                     self.$cookie.deleteAllCookies();
+                    self.updateUserId();
                     self.$router.push("/");
+                    location.reload();
                 }
             });
         },

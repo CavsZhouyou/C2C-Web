@@ -3,7 +3,7 @@
  * @Descriptions: 主页
  * @Date: 2018-07-05 20:33:56 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-10 20:54:26
+ * @Last Modified time: 2018-07-11 15:41:18
  */
 
 <template>
@@ -98,8 +98,8 @@
           </a>
         </div>
         <div class="photo-box">
-          <router-link to="./HouseListPage"><img src="../assets/10.jpg" alt="重庆">
-            <span class="title">重庆</span>
+          <router-link to="./HouseListPage"><img src="../assets/10.jpg" alt="威海">
+            <span class="title">威海</span>
           </router-link>
         </div>
       </div>
