@@ -3,7 +3,7 @@
  * @Descriptions: 查看已发布房源
  * @Date: 2018-07-06 12:37:43 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-12 11:36:58
+ * @Last Modified time: 2018-07-12 15:18:03
  */
 
 
@@ -18,7 +18,7 @@
                 <div class="left-bar">
                     <img :src="building.acc_images" class="head-img" @click="viewBuildingDetail(building.acc_id)">
                     <br> &nbsp;&nbsp;&nbsp;
-                    <span>房屋类型：{{building.acc_type_id}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>房屋类型：{{building.acc_type_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
                     <span>房屋面积：{{building.acc_capacity}}m2</span>&nbsp;&nbsp;&nbsp;&nbsp;
                     <br>
                     <br>&nbsp;&nbsp;&nbsp;

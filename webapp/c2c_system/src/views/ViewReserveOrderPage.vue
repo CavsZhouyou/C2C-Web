@@ -3,7 +3,7 @@
  * @Descriptions: 查看预定订单页面 
  * @Date: 2018-07-06 11:00:27 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-12 11:00:03
+ * @Last Modified time: 2018-07-12 15:23:46
  */
 
 <template>
@@ -98,7 +98,7 @@
 
         <div class="line order" v-for="(order, index) in orderList" :key="index">
             <div class="left-bar">
-                <img :src="order.image" class="head-img">
+                <img :src="order.image" class="head-img" @click="viewBuildingDetail(order.acc_id)">
                 <br> &nbsp;&nbsp;&nbsp;
                 <span class="first">出租者姓名：{{order.tenant_name}}</span>
                 <span>出租者联系方式：{{order.tenant_phone}}</span>
@@ -193,6 +193,10 @@ const ViewReserveOrderPage = {
                         message: "已取消删除"
                     });
                 });
+        },
+
+        viewBuildingDetail: function(buildingId) {
+            this.$router.push("/HouseDetailPage/" + buildingId);
         }
     },
     created() {
