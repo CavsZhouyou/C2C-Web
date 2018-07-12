@@ -11,11 +11,11 @@ class User(db.Model):
     user_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     nickname = db.Column(db.String(100),nullable=False)
     password = db.Column(db.String(100),nullable=False)
-    email = db.Column(db.String(100),nullable=False)
+    email = db.Column(db.String(100),nullable=False,unique=True)
     phone = db.Column(db.String(50),nullable=False)
     registerdate = db.Column(db.DateTime,nullable=False,default=datetime.now)
     role_id = db.Column(db.Integer,db.ForeignKey('role.role_id'))
-    address = db.Column(db.String(100),nullable=True)
+    role = db.relationship("Role",backref="users")
     name = db.Column(db.String(100),nullable=False)
     id_card = db.Column(db.String(100),nullable=False)
     info = db.Column(db.Text,nullable=True)
@@ -80,7 +80,6 @@ class User(db.Model):
                 'nickname':self.nickname,
                 'email':self.email,
                 'phone':self.phone,
-                'address':self.address,
                 'info':self.info,
                 'headico':self.headico,
                 'success':True
@@ -150,17 +149,24 @@ class AccommodationType(db.Model):
 class Accommodation(db.Model):
     __tablename__ = 'accommodation'
     acc_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)    #房源ID
-    acc_address = db.Column(db.String(255))            #房源地址
-    acc_capacity = db.Column(db.Integer)               #房源面积
-    acc_price = db.Column(db.String(100))                  #房源价格
+    acc_capacity = db.Column(db.Integer,nullable=False)               #房源面积
+    acc_price = db.Column(db.Integer,nullable=False)                  #房源价格
     acc_datetype = db.Column(db.Integer,db.ForeignKey('datetype.type_id'))
-    acc_city = db.Column(db.Integer,db.ForeignKey('city.city_id'))               #房源区域
+    acc_city = db.Column(db.Integer,db.ForeignKey('city.city_id'))               #房源城市
+    city = db.relationship('City',backref='accommodations')
+    acc_county = db.Column(db.Integer,db.ForeignKey('county.county_id'))            #县区
+    county = db.relationship('County',backref='accommodations')
+    acc_street = db.Column(db.Integer,db.ForeignKey('street.street_id'))            #街道
+    street = db.relationship("Street",backref='accommodations')
+    acc_address = db.Column(db.String(255),nullable=True)
     acc_description = db.Column(db.String(255))        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
+    user = db.relationship('User',backref='accommodations')
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
-    acc_images = db.Column(db.Text,nullable=True)
+    acc_type = db.relationship('AccommodationType',backref="accommodations")
+    acc_images = db.Column(db.Text,nullable=True)           #图片url,空格分割
     
-    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,datetype,images):
+    def __init__(self,acc_address,acc_capacity,acc_price,acc_city,acc_description,acc_user_id,acc_type_id,acc_datetype,acc_images,acc_county,acc_street):
         self.acc_address = acc_address
         self.acc_capacity = acc_capacity
         self.acc_price = acc_price
@@ -168,21 +174,36 @@ class Accommodation(db.Model):
         self.acc_description = acc_description 
         self.acc_user_id = acc_user_id 
         self.acc_type_id = acc_type_id 
-        self.acc_datetype = datetype
-        self.acc_images = images 
+        self.acc_datetype =acc_datetype 
+        self.acc_images = acc_images 
+        self.acc_county = acc_county
+        self.acc_street = acc_street
 
     def to_json(self):
         return jsonify({
+            'success':True,
+            'acc_id':self.acc_id,
             'acc_address':self.acc_address,
             'acc_capacity':self.acc_capacity,
             'acc_price':self.acc_price,
             'acc_city':self.acc_city,
+            'acc_city_name':self.city.city_name,
             'acc_description':self.acc_description,
             'acc_user_id':self.acc_user_id,
-            'acc_type_id':self.acc_type_id,
+            'acc_type':self.acc_type_id,
+            'acc_type_name':self.acc_type.acctype_description,
             'acc_datetype':self.acc_datetype,
-            'acc_images':self.images
+            'acc_images':self.acc_images.split(" "),
+            'acc_street_name':self.street.street_name,
+            'acc_county_name':self.county.county_name, 
+            'acc_street':self.acc_street,
+            'acc_county':self.acc_county,
+            'nickname':self.user.nickname,
+            'headico':self.user.headico,
+            'phone':self.user.phone,
+            'comment_count':Comment.query.filter(Comment.to_who==self.acc_user_id).count()
             })
+
 
 
 
@@ -255,18 +276,30 @@ class Role(db.Model):
 class Reservation(db.Model):
     __tablename__ = 'reservation'
     res_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
-    tenant_id = db.Column(db.Integer(),  nullable=False)   #租房者
+    tenant_id = db.Column(db.Integer(),db.ForeignKey('user.user_id'))   #租房者
+    tenant = db.relationship("User",backref='reservations')
     demand = db.Column(db.Text, nullable=True)              #备注信息
     acc_id = db.Column(db.Integer,db.ForeignKey('accommodation.acc_id'))
+    acc_user_id = db.Column(db.Integer,nullable=False)
+    accommodation = db.relationship('Accommodation',backref='reservations')
+    res_price = db.Column(db.Integer,nullable=False)
     state_id = db.Column(db.Integer,db.ForeignKey('resstate.state_id'))
-    date = db.Column(db.DateTime, nullable=False,default = datetime.now)
+    state = db.relationship('ResState',backref='reservations')
+    begin = db.Column(db.BigInteger,nullable=False)
+    end = db.Column(db.BigInteger,nullable=False)
+
     
-    def __init__(self,tenant_id,demand,acc_id,state_id):
+    def __init__(self,tenant_id,demand,acc_id,state_id,begin,end,res_price,acc_user_id):
         self.tenant_id = tenant_id 
         self.demand = demand 
         self.acc_id = acc_id 
         self.state_id = state_id 
         self.date = datetime.now 
+        self.begin = begin 
+        self.end = end 
+        self.res_price=res_price 
+        self.acc_user_id = acc_user_id 
+
 
     def to_json(self):
         return jsonify({
@@ -274,7 +307,8 @@ class Reservation(db.Model):
             'demand':self.demand,
             'acc_id':self.acc_id,
             'state_id':self.state_id,
-            'date':self.date
+            'date':self.date,
+            'res_price':self.res_price 
             })
 
 #预订信息表状态
@@ -295,21 +329,18 @@ class Comment(db.Model):
     __tablename__='comment'
     comment_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True) 
     from_who= db.Column(db.Integer,db.ForeignKey('user.user_id'))
-    to_which = db.Column(db.Integer,db.ForeignKey('reservation.res_id'))
     to_who = db.Column(db.Integer,db.ForeignKey('user.user_id'))
     content = db.Column(db.String(15), nullable=False)
     date = db.Column(db.DateTime, nullable=False,default = datetime.now)
 
-    def __init__(self,from_who,to_which,to_who,content):
+    def __init__(self,from_who,to_who,content):
         self.from_who = from_who 
-        self.to_which = to_which 
         self.to_who = to_who 
         self.content = content 
 
     def to_json(self):
         return jsonify({
             'from_who':self.from_who,
-            'to_which':self.to_which,
             'to_who':self.to_who,
             'content':self.content,
             'date':self.date
@@ -327,10 +358,13 @@ class County(db.Model):
     county_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     county_name = db.Column(db.String(20),nullable=False)
     city_id = db.Column(db.Integer,db.ForeignKey("city.city_id"))
+    city = db.relationship("City",backref="counties")
 
 class Street(db.Model):
     __tablename__ = 'street'
     street_id = db.Column(db.Integer,autoincrement=True,nullable=False,unique=True,primary_key=True)
     street_name = db.Column(db.String(50),nullable=False)
     county_id = db.Column(db.Integer,db.ForeignKey("county.county_id"))
+    county = db.relationship("County",backref = "streets")
+
 
