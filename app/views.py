@@ -47,6 +47,10 @@ def registe():
         return redirect('/')
     else:
         dic = request.get_json()
+        if not dic['id_card'][:-1].isdigit():
+            return jsonify({'success':False})
+        if not dic['phone'].isdigit():
+            return jsonify({'success':False})
         try:
             user = User(
                     nickname=dic['nickname'], 
