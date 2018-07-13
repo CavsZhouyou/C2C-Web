@@ -159,7 +159,7 @@ class Accommodation(db.Model):
     acc_street = db.Column(db.Integer,db.ForeignKey('street.street_id'))            #街道
     street = db.relationship("Street",backref='accommodations')
     acc_address = db.Column(db.String(255),nullable=True)
-    acc_description = db.Column(db.String(255))        #房源描述
+    acc_description = db.Column(db.Text())        #房源描述
     acc_user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'))               #拥有者ID
     user = db.relationship('User',backref='accommodations')
     acc_type_id = db.Column(db.Integer,db.ForeignKey('accommodationtype.acctype_id'))   #类型id
