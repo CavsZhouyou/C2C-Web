@@ -13,7 +13,7 @@ module.exports = {
         hotOnly: false,
         proxy: {
             "/c2c/*": {
-                target: "http://10.236.194.228:5000",
+                target: "http://www.xblame.top:5000",
                 secure: false
             },
         }, // 设置代理

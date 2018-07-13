@@ -3,7 +3,7 @@
  * @Descriptions: 房屋列表页面 
  * @Date: 2018-07-05 20:34:30 
  * @Last Modified by: zhouyou@werun
- * @Last Modified time: 2018-07-12 11:21:03
+ * @Last Modified time: 2018-07-13 10:11:03
  */
 
 
@@ -795,6 +795,7 @@ export default HouseListPage;
                 margin-top: 30px;
                 margin-bottom: 10px;
                 width: 400px;
+                height: 350px;
 
                 img {
                     width: 400px;
